@@ -15,7 +15,6 @@ public enum ErrorCode {
     EMAIL_ALREADY_REGISTERED("Email already registered", HttpStatusCode.valueOf(403)),
     ERROR_WHILE_SENDING_LETTER("Error while sending letter", HttpStatusCode.valueOf(400)),
     FILE_NOT_FOUND("File not found", HttpStatusCode.valueOf(404));
-    @Getter
     private final String message;
     private final HttpStatusCode statusCode;
 }
