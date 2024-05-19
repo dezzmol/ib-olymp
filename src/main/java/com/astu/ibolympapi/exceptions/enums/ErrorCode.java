@@ -14,6 +14,7 @@ public enum ErrorCode {
     EMAIL_NOT_VERIFIED("Email not verified", HttpStatusCode.valueOf(403)),
     EMAIL_ALREADY_REGISTERED("Email already registered", HttpStatusCode.valueOf(403)),
     ERROR_WHILE_SENDING_LETTER("Error while sending letter", HttpStatusCode.valueOf(400)),
+    USER_NOT_FOUND("User didn't found", HttpStatusCode.valueOf(404)),
     FILE_NOT_FOUND("File not found", HttpStatusCode.valueOf(404));
     private final String message;
     private final HttpStatusCode statusCode;

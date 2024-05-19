@@ -1,11 +1,10 @@
 package com.astu.ibolympapi.auth.controllers;
 
-import com.astu.ibolympapi.auth.services.AuthService;
+import com.astu.ibolympapi.auth.services.AuthenticationService;
 import com.astu.ibolympapi.user.dto.SignInRequest;
 import com.astu.ibolympapi.user.dto.SignUpRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "Authentication, Registration", description = "Authentication, Registration")
 public class AuthenticationController {
-    private final AuthService service;
+    private final AuthenticationService service;
 
     @Operation(summary = "Sign up")
     @PostMapping("/sign-up")
@@ -36,7 +35,7 @@ public class AuthenticationController {
 
     @Operation(summary = "Activate account")
     @PostMapping("/activate/{activate-token}")
-    public ResponseEntity<?> activate(@PathVariable String activateToken) {
+    public ResponseEntity<?> activate(@PathVariable("activate-token") String activateToken) {
         service.activate(activateToken);
         return null;
     }

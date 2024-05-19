@@ -3,13 +3,14 @@ package com.astu.ibolympapi.auth.services;
 import com.astu.ibolympapi.auth.dto.AuthenticationResponse;
 import com.astu.ibolympapi.exceptions.BadRequestException;
 import com.astu.ibolympapi.exceptions.enums.ErrorCode;
+import com.astu.ibolympapi.mail.service.MailService;
 import com.astu.ibolympapi.tokens.TokenService;
 import com.astu.ibolympapi.tokens.TokenType;
 import com.astu.ibolympapi.user.dto.SignInRequest;
 import com.astu.ibolympapi.user.dto.SignUpRequest;
+import com.astu.ibolympapi.user.entities.User;
 import com.astu.ibolympapi.user.services.UserService;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,16 +21,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
-public class AuthService {
+public class AuthenticationService {
     private final UserService userService;
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
+    private final MailService mailService;
 
     public void signUp(SignUpRequest request) {
-        userService.save(request);
+        userService.signUp(request);
+        sendActivationLink(request);
     }
 
     public AuthenticationResponse signIn(SignInRequest authRequest, HttpServletResponse response) {
@@ -48,6 +53,17 @@ public class AuthService {
     }
 
     public void activate(String activateToken) {
-        //TODO: create activate func
+        try {
+            String email = tokenService.extractUserEmailFromJWT(activateToken);
+            Optional<User> user = userService.findByEmail(email);
+            user.ifPresent(userService::save);
+        } catch (RuntimeException e) {
+            throw new BadRequestException(ErrorCode.USER_NOT_FOUND);
+        }
+    }
+
+    public void sendActivationLink(SignUpRequest request) {
+        String activateToken = tokenService.generateActivateToken(request.email(), TokenType.ACTIVATE_TOKEN);
+        mailService.sendSimpleEmail(request.email(), "Активация аккаунта", "Для активации аккаунта перейдите по ссылке " + activateToken);
     }
 }

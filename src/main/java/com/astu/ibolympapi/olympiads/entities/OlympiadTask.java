@@ -2,11 +2,18 @@ package com.astu.ibolympapi.olympiads.entities;
 
 import com.astu.ibolympapi.tasks.entities.Task;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Data
 @Entity
+@Builder
 @Table(name = "olympiad_tasks")
+@IdClass(OlympiadTaskId.class)
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class OlympiadTask {
     @Id
     @ManyToOne

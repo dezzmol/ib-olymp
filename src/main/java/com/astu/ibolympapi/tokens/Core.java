@@ -45,6 +45,13 @@ public class Core {
                 .sign(Algorithm.HMAC512(secret.getBytes()));
     }
 
+    public String generateActivateToken(String email, TokenType tokenType) {
+        return JWT.create()
+                .withClaim(EMAIL, email)
+                .withExpiresAt(new java.util.Date(System.currentTimeMillis() + tokenType.getTokenExpiration()))
+                .sign(Algorithm.HMAC512(secret.getBytes()));
+    }
+
     public String getUserEmailFromJwt(String jwt) {
         return JWT.require(Algorithm.HMAC512(secret.getBytes()))
                 .build()

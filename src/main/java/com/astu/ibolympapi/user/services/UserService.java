@@ -22,7 +22,7 @@ public class UserService {
     }
 
     @SuppressWarnings("null")
-    public void save(SignUpRequest request) {
+    public void signUp(SignUpRequest request) {
         Optional<User> existingUser = repository.findByEmail(request.email());
         if (existingUser.isPresent()) {
             throw new BadRequestException(
@@ -37,6 +37,10 @@ public class UserService {
                 .password(passwordEncoder.encode(request.password()))
                 .active(false)
                 .build();
+        repository.save(user);
+    }
+
+    public void save(User user) {
         repository.save(user);
     }
 }

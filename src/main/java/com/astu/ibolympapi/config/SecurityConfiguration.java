@@ -1,4 +1,4 @@
-package com.astu.ibolympapi.auth.config;
+package com.astu.ibolympapi.config;
 
 import com.astu.ibolympapi.exceptions.handlers.UserNotEnabledExceptionHandler;
 import com.astu.ibolympapi.tokens.JwtAuthFilter;

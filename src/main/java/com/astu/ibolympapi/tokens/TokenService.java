@@ -1,5 +1,6 @@
 package com.astu.ibolympapi.tokens;
 
+import com.astu.ibolympapi.tokens.entities.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +23,9 @@ public class TokenService {
 
     public String generateRefreshToken(String email, TokenType tokenType) {
         return core.generateRefreshToken(email, tokenType);
+    }
+
+    public String generateActivateToken(String email, TokenType tokenType) {
+        return core.generateActivateToken(email, tokenType);
     }
 }
