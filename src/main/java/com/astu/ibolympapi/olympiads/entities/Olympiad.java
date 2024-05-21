@@ -2,7 +2,10 @@ package com.astu.ibolympapi.olympiads.entities;
 
 import com.astu.ibolympapi.tasks.entities.Task;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,6 +13,9 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "olympiads")
+@Builder
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class Olympiad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
