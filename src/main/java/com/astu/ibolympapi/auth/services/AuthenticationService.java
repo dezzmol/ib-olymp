@@ -64,6 +64,7 @@ public class AuthenticationService {
 
     public void sendActivationLink(SignUpRequest request) {
         String activateToken = tokenService.generateActivateToken(request.email(), TokenType.ACTIVATE_TOKEN);
-        mailService.sendSimpleEmail(request.email(), "Активация аккаунта", "Для активации аккаунта перейдите по ссылке " + activateToken);
+        String link = "http://localhost:8080/api/v1/auth/activate/" + activateToken;
+        mailService.sendSimpleEmail(request.email(), "Активация аккаунта", "Для активации аккаунта перейдите по ссылке " + link);
     }
 }
