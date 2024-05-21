@@ -12,7 +12,7 @@ public class Web {
             "http://*.example.com/*" //TODO: add frontend url
     );
 
-    private final String[] allowedPaths = {
+    private final List<String> allowedPaths = List.of(
             "/api/v1/auth",
             "api/v1/test",
             "/v2/api-docs",
@@ -24,6 +24,7 @@ public class Web {
             "/configuration/security",
             "/swagger-ui",
             "/webjars",
-            "/swagger-ui.html"
-    };
+            "/swagger-ui.html",
+            "/swagger-ui/index.html"
+    );
 }

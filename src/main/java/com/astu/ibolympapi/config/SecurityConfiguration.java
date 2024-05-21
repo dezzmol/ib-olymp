@@ -2,6 +2,7 @@ package com.astu.ibolympapi.config;
 
 import com.astu.ibolympapi.exceptions.handlers.UserNotEnabledExceptionHandler;
 import com.astu.ibolympapi.tokens.JwtAuthFilter;
+import com.astu.ibolympapi.user.enums.Role;
 import com.astu.ibolympapi.web.Web;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
@@ -27,7 +29,25 @@ public class SecurityConfiguration {
     private final UserNotEnabledExceptionHandler userNotEnabledExceptionHandler;
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authProvider;
-
+    private static final String[] ALLOWED_PATHS = {
+//            "/email/**",
+            "/api/v1/auth/**",
+            "/v2/api-docs",
+            "/actuator/**",
+            "/error",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui/**",
+            "/webjars/**",
+            "/swagger-ui.html",
+            "/ws/info",
+            "/ws/**",
+            "/ws",
+            "/"};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -44,8 +64,12 @@ public class SecurityConfiguration {
                     return corsConfiguration;
 
                 }))
-                .authorizeHttpRequests(auth -> auth.requestMatchers(web.getAllowedPaths())
+                .authorizeHttpRequests(auth -> auth.requestMatchers(ALLOWED_PATHS)
                         .permitAll()
+                        .requestMatchers("/api/v1/student").hasAuthority(Role.ROLE_STUDENT.name())
+                        .requestMatchers("/api/v1/olymp").hasAuthority(Role.ROLE_OLYMPIAD_ADMIN.name())
+                        .requestMatchers("/api/v1/estimate").hasAuthority(Role.ROLE_INSPECTOR.name())
+                        .requestMatchers("/api/v1/admin").hasAuthority(Role.ROLE_ADMIN.name())
                         .anyRequest()
                         .authenticated()
                 )

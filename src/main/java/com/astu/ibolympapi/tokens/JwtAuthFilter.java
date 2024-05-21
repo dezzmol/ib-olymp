@@ -22,6 +22,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 @Component
@@ -31,6 +32,24 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserService userService;
     private final TokenService tokenService;
     private final Web web;
+    private static final List<String> ALLOWED_PATHS = List.of(
+            "/api/v1/auth",
+            "api/v1/test",
+            "/v2/api-docs",
+            "/actuator",
+            "/error",
+            "/v3/api-docs",
+            "/swagger-resources",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui",
+            "/webjars",
+            "/swagger-ui.html",
+            "/ws/**",
+            "/ws/info",
+            "/ws"
+    );
+
 
     @SuppressWarnings("null")
     @Override
@@ -53,7 +72,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private boolean isRequestAllowedWithoutAuthentication(HttpServletRequest request) {
         String requestPath = request.getServletPath();
-        return Arrays.stream(web.getAllowedPaths()).toList().stream().anyMatch(requestPath::contains);
+        System.out.println(requestPath);
+        System.out.println(ALLOWED_PATHS.stream().anyMatch(requestPath::contains));
+        return ALLOWED_PATHS.stream().anyMatch(requestPath::contains);
     }
 
     private void authenticateUserIfNecessary(String email, String jwt, HttpServletRequest request) {
@@ -74,6 +95,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return headerAuth.substring(7);
         }
 
-        throw new BadRequestException(ErrorCode.INVALID_ACCESS_TOKEN);
+        return null;
     }
 }
