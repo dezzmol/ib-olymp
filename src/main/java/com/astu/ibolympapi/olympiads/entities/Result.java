@@ -13,6 +13,7 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
     @JoinColumn(name = "team_id", nullable = false, foreignKey = @ForeignKey(name = "team_id"))
     private Team team;
 
