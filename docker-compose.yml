@@ -1,0 +1,50 @@
+version: '3.6'
+services:
+    postgresql:
+        container_name: 'postgresdb'
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_DB: ${DB_NAME}
+            POSTGRES_USER: ${DB_USERNAME}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+        volumes:
+            - './data/postgres:/var/lib/postgresql/data'
+        ports:
+            - "5433:5432"
+        networks:
+            - main_network
+
+    backend:
+        container_name: 'java-spring-boot-backend'
+        restart: always
+        build:
+            context: .
+            dockerfile: Dockerfile
+        depends_on:
+            - postgresql
+        ports:
+            - '8080:8080'
+        networks:
+            - main_network
+        env_file:
+            - .env
+
+    frontend:
+        container_name: 'react-frontend'
+        restart: always
+        build:
+            context: /frontend
+            dockerfile: Dockerfile
+        depends_on:
+            - backend
+        ports:
+            - '3000:3000'
+        networks:
+            - main_network
+        env_file:
+            - .env
+
+networks:
+    main_network:
+        driver: bridge
