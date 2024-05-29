@@ -1,7 +1,9 @@
 package com.astu.ibolympapi.olympiads.entities;
 
-public class OlympiadTaskTeamId {
-    private Long Olympiad;
-    private Long Task;
-    private Long Team;
+import java.io.Serializable;
+
+public class OlympiadTaskTeamId implements Serializable {
+    private Long olympiad;
+    private Long task;
+    private Long team;
 }
