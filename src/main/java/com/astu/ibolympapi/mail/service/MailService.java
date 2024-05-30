@@ -4,7 +4,9 @@ import com.astu.ibolympapi.exceptions.BadRequestException;
 import com.astu.ibolympapi.exceptions.enums.ErrorCode;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -16,9 +18,12 @@ import org.springframework.util.ResourceUtils;
 import java.io.FileNotFoundException;
 
 @Service
+@PropertySource("application.properties")
 public class MailService {
     @Value("${spring.mail.username}")
     private String senderEmail;
+
+    @Autowired
     public JavaMailSender emailSender;
 
     public void sendSimpleEmail(String toAddress, String subject, String message) {
@@ -27,6 +32,7 @@ public class MailService {
             simpleMailMessage.setTo(toAddress);
             simpleMailMessage.setSubject(subject);
             simpleMailMessage.setText(message);
+            simpleMailMessage.setFrom(senderEmail);
             emailSender.send(simpleMailMessage);
         } catch (MailException e) {
             throw new BadRequestException(ErrorCode.ERROR_WHILE_SENDING_LETTER);
