@@ -72,14 +72,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private boolean isRequestAllowedWithoutAuthentication(HttpServletRequest request) {
         String requestPath = request.getServletPath();
-        System.out.println(requestPath);
-        System.out.println(ALLOWED_PATHS.stream().anyMatch(requestPath::contains));
         return ALLOWED_PATHS.stream().anyMatch(requestPath::contains);
     }
 
-    private void authenticateUserIfNecessary(String email, String jwt, HttpServletRequest request) {
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            User userDetails = userService.findByEmail(email).orElseThrow();
+    private void authenticateUserIfNecessary(String username, String jwt, HttpServletRequest request) {
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            User userDetails = userService.findByUsername(username).orElseThrow();
             if (tokenService.validateToken(jwt)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
