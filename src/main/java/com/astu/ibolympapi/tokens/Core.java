@@ -15,31 +15,32 @@ public class Core {
     private static final String AUTHORIZATION = "Authorization";
     private static final String EMAIL = "email";
     private static final String TOKEN_TYPE = "tokenType";
+    private static final String USERNAME = "username";
 
-    public String generateAccessToken(String email, TokenType tokenType) {
+    public String generateAccessToken(String username, TokenType tokenType) {
 
         return JWT.create()
                 .withSubject(AUTHORIZATION)
-                .withClaim(EMAIL, email)
+                .withClaim(USERNAME, username)
                 .withClaim(TOKEN_TYPE, tokenType.name())
                 .withExpiresAt(new java.util.Date(System.currentTimeMillis() + tokenType.getTokenExpiration()))
                 .sign(Algorithm.HMAC512(secret.getBytes()));
     }
 
-    public String generateResetToken(String email, TokenType tokenType) {
+    public String generateResetToken(String username, TokenType tokenType) {
 
         return JWT.create()
                 .withSubject(AUTHORIZATION)
-                .withClaim(EMAIL, email)
+                .withClaim(USERNAME, username)
                 .withClaim(TOKEN_TYPE, tokenType.name())
                 .withExpiresAt(new java.util.Date(System.currentTimeMillis() + tokenType.getTokenExpiration()))
                 .sign(Algorithm.HMAC512(secret.getBytes()));
     }
 
-    public String generateRefreshToken(String email, TokenType tokenType) {
+    public String generateRefreshToken(String username, TokenType tokenType) {
         return JWT.create()
                 .withSubject(AUTHORIZATION)
-                .withClaim(EMAIL, email)
+                .withClaim(USERNAME, username)
                 .withClaim(TOKEN_TYPE, tokenType.name())
                 .withExpiresAt(new java.util.Date(System.currentTimeMillis() + tokenType.getTokenExpiration()))
                 .sign(Algorithm.HMAC512(secret.getBytes()));
