@@ -17,8 +17,8 @@ public class TokenService {
         return core.validateToken(jwt);
     }
 
-    public String generateAccessToken(String email, TokenType tokenType) {
-        return core.generateAccessToken(email, tokenType);
+    public String generateAccessToken(String username, TokenType tokenType) {
+        return core.generateAccessToken(username, tokenType);
     }
 
     public String generateRefreshToken(String email, TokenType tokenType) {
