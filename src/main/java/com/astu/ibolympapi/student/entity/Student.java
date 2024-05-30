@@ -1,12 +1,19 @@
-package com.astu.ibolympapi.olympiads.entities;
+package com.astu.ibolympapi.student.entity;
 
+import com.astu.ibolympapi.team.entity.Team;
 import com.astu.ibolympapi.user.entities.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Data
 @Entity
+@Builder
 @Table(name = "students")
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +23,7 @@ public class Student {
     @JoinColumn(name = "team_id", foreignKey = @ForeignKey(name = "team_id"))
     private Team team;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true, foreignKey = @ForeignKey(name = "user_id"))
     private User user;
 
