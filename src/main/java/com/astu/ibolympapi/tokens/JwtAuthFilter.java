@@ -21,7 +21,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -61,8 +60,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         try {
             String jwt = extractJwtFromRequest(request);
-            String email = tokenService.extractUserEmailFromJWT(jwt);
-            authenticateUserIfNecessary(email, jwt, request);
+            String username = tokenService.extractUsernameFromJWT(jwt);
+            authenticateUserIfNecessary(username, jwt, request);
         } catch (JWTVerificationException e) {
             throw new BadRequestException(ErrorCode.INVALID_ACCESS_TOKEN);
         }

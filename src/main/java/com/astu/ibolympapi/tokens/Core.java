@@ -53,11 +53,11 @@ public class Core {
                 .sign(Algorithm.HMAC512(secret.getBytes()));
     }
 
-    public String getUserEmailFromJwt(String jwt) {
+    public String getUsernameFromJwt(String jwt) {
         return JWT.require(Algorithm.HMAC512(secret.getBytes()))
                 .build()
                 .verify(jwt)
-                .getClaim(EMAIL)
+                .getClaim(USERNAME)
                 .asString();
     }
 

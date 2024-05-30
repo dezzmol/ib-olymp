@@ -54,7 +54,7 @@ public class AuthenticationService {
 
     public void activate(String activateToken) {
         try {
-            String email = tokenService.extractUserEmailFromJWT(activateToken);
+            String email = tokenService.extractUsernameFromJWT(activateToken);
             Optional<User> user = userService.findByEmail(email);
             user.ifPresent(userService::save);
         } catch (RuntimeException e) {
