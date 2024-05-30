@@ -23,8 +23,7 @@ CREATE TABLE Olympiads
 CREATE TABLE Teams
 (
     id       BIGSERIAL PRIMARY KEY,
-    name     varchar(255) NOT NULL,
-    students JSONB
+    name     varchar(255) NOT NULL
 );
 
 CREATE TABLE Students
