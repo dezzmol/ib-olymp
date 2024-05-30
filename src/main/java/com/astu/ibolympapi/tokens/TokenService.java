@@ -1,6 +1,5 @@
 package com.astu.ibolympapi.tokens;
 
-import com.astu.ibolympapi.tokens.entities.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,8 +8,8 @@ import org.springframework.stereotype.Service;
 public class TokenService {
     private final Core core;
 
-    public String extractUserEmailFromJWT(String jwt) {
-        return core.getUserEmailFromJwt(jwt);
+    public String extractUsernameFromJWT(String jwt) {
+        return core.getUsernameFromJwt(jwt);
     }
 
     public boolean validateToken(String jwt) {

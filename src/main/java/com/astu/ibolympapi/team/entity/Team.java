@@ -1,5 +1,6 @@
 package com.astu.ibolympapi.team.entity;
 
+import com.astu.ibolympapi.student.entity.Student;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,4 +24,6 @@ public class Team implements Serializable {
     @Column(name = "name", nullable = false, length = 255)
     private String name;
 
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Student> students;
 }

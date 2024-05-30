@@ -5,36 +5,36 @@ import com.astu.ibolympapi.exceptions.enums.ErrorCode;
 import com.astu.ibolympapi.student.dto.CreateTeamDTO;
 import com.astu.ibolympapi.student.entity.Student;
 import com.astu.ibolympapi.student.repository.StudentRepo;
+import com.astu.ibolympapi.student.service.StudentService;
+import com.astu.ibolympapi.team.dto.TeamDTO;
+import com.astu.ibolympapi.team.entity.InviteToken;
 import com.astu.ibolympapi.team.entity.Team;
+import com.astu.ibolympapi.team.mapper.TeamMapper;
+import com.astu.ibolympapi.team.repository.InviteTokenRepo;
 import com.astu.ibolympapi.team.repository.TeamRepo;
 import com.astu.ibolympapi.user.entities.User;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class TeamService {
     private final TeamRepo repo;
     private final StudentRepo studentRepo;
+    private final TeamMapper teamMapper;
+    private final InviteTokenRepo inviteTokenRepo;
+    private final StudentService studentService;
 
-    public void createTeam(CreateTeamDTO createTeamDTO) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication.getPrincipal();
-        User user = null;
-        if (principal instanceof UserDetails) {
-            user = (User) ((UserDetails) principal);
-        }
+    public TeamDTO createTeam(CreateTeamDTO createTeamDTO) {
+        Student optionalStudent = studentService.getStudentByAuthUser();
 
-        Optional<Student> optionalStudent = studentRepo.findByUser(user);
-
-        if (optionalStudent.isEmpty()) {
-            throw new BadRequestException(ErrorCode.STUDENT_ALREADY_REGISTERED);
+        if (optionalStudent.getTeam() != null) {
+            throw new BadRequestException(ErrorCode.STUDENT_HAS_TEAM);
         }
 
         Team team = Team.builder()
@@ -42,9 +42,41 @@ public class TeamService {
                 .build();
 
         repo.save(team);
+        optionalStudent.setIsCaptain(true);
+        optionalStudent.setTeam(team);
+        studentRepo.save(optionalStudent);
+
+        return teamMapper.toTeamDTO(team);
     }
 
-    public Team getTeam(Long teamId) {
-        return repo.getReferenceById(teamId);
+
+
+    public TeamDTO getTeam(Long teamId) {
+        return teamMapper.toTeamDTO(repo.findById(teamId)
+                .orElseThrow(()-> new BadRequestException(ErrorCode.TEAM_NOT_FOUND)));
+    }
+
+    public String generateInviteLink() {
+        Student optionalStudent = studentService.getStudentByAuthUser();
+
+        if (optionalStudent.getTeam() == null) {
+            throw new BadRequestException(ErrorCode.STUDENT_HAS_NOT_TEAM);
+        }
+
+        if (!optionalStudent.getIsCaptain()) {
+            throw new BadRequestException(ErrorCode.STUDENT_IS_NOT_CAPTAIN);
+        }
+
+        if (optionalStudent.getTeam().getStudents().size() > 5) {
+            throw new BadRequestException(ErrorCode.TEAM_IS_FULL);
+        }
+
+        InviteToken inviteToken = InviteToken.builder()
+                .team(optionalStudent.getTeam())
+                .build();
+
+        inviteTokenRepo.save(inviteToken);
+
+        return "http://localhost:8080/api/v1/student/joinTeam/" + inviteToken.getToken();
     }
 }
