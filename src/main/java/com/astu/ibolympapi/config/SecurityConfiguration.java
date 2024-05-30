@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
@@ -66,17 +65,16 @@ public class SecurityConfiguration {
                 }))
                 .authorizeHttpRequests(auth -> auth.requestMatchers(ALLOWED_PATHS)
                         .permitAll()
-                        .requestMatchers("/api/v1/student").hasAuthority(Role.ROLE_STUDENT.name())
-                        .requestMatchers("/api/v1/olymp").hasAuthority(Role.ROLE_OLYMPIAD_ADMIN.name())
-                        .requestMatchers("/api/v1/estimate").hasAuthority(Role.ROLE_INSPECTOR.name())
-                        .requestMatchers("/api/v1/admin").hasAuthority(Role.ROLE_ADMIN.name())
+                        .requestMatchers("/api/v1/student/**").hasAnyAuthority(Role.ROLE_STUDENT.name(), Role.ROLE_OLYMPIAD_ADMIN.name(), Role.ROLE_ADMIN.name())
+                        .requestMatchers("/api/v1/olymp").hasAnyAuthority(Role.ROLE_STUDENT.name(), Role.ROLE_OLYMPIAD_ADMIN.name())
+                        .requestMatchers("/api/v1/estimate/**").hasAuthority(Role.ROLE_INSPECTOR.name())
+                        .requestMatchers("/api/v1/admin/**").hasAuthority(Role.ROLE_ADMIN.name())
                         .anyRequest()
                         .authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authProvider)
 
-                .exceptionHandling(exc -> exc.authenticationEntryPoint(userNotEnabledExceptionHandler))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> logout.logoutUrl("/api/v1/auth/logout"))
                 .build();
