@@ -17,7 +17,14 @@ public enum ErrorCode {
     USER_NOT_FOUND("User didn't found", HttpStatusCode.valueOf(404)),
     FILE_NOT_FOUND("File not found", HttpStatusCode.valueOf(404)),
     STUDENT_ALREADY_REGISTERED("Student already registered", HttpStatusCode.valueOf(403)),
-    USER_ALREADY_REGISTERED("User already registered", HttpStatusCode.valueOf(403));
+    USER_ALREADY_REGISTERED("User already registered", HttpStatusCode.valueOf(403)),
+    STUDENT_HAS_TEAM("Student has a team already", HttpStatusCode.valueOf(403)),
+    STUDENT_NOT_FOUND("Student not found", HttpStatusCode.valueOf(404)),
+    STUDENT_HAS_NOT_TEAM("Student has not team", HttpStatusCode.valueOf(403)),
+    STUDENT_IS_NOT_CAPTAIN("Student is not captain", HttpStatusCode.valueOf(403)),
+    TEAM_IS_FULL("Team is full", HttpStatusCode.valueOf(403)),
+    TEAM_NOT_FOUND("Team not found", HttpStatusCode.valueOf(404)),
+    TOKEN_NOT_FOUND("Token not found", HttpStatusCode.valueOf(404));
     private final String message;
     private final HttpStatusCode statusCode;
 }
