@@ -57,10 +57,16 @@ public class StudentService {
         repo.save(student);
     }
 
-    public StudentDTO getStudent(Long id) {
+    public StudentDTO getStudentDTO(Long id) {
         return studentMapper.toStudentDTO(repo.findById(id).orElseThrow(
                 () -> new BadRequestException(ErrorCode.STUDENT_NOT_FOUND)
         ));
+    }
+
+    public Student getStudent(Long id) {
+        return repo.findById(id).orElseThrow(
+                () -> new BadRequestException(ErrorCode.STUDENT_NOT_FOUND)
+        );
     }
 
     public void joinTeam(String token) {

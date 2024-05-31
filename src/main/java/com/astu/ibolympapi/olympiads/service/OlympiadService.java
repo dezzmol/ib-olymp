@@ -9,7 +9,6 @@ import com.astu.ibolympapi.olympiads.mapper.OlympiadMapper;
 import com.astu.ibolympapi.olympiads.repositories.OlympiadRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -36,9 +35,14 @@ public class OlympiadService {
         return olympiadMapper.toOlympiadDTO(olympiad);
     }
 
-    public OlympiadDTO getOlympiad(Long id) {
+    public Olympiad getOlympiad(Long id) {
+        return olympiadRepo.findById(id)
+                .orElseThrow(() -> new BadRequestException(ErrorCode.OLYMPIAD_NOT_FOUND));
+    }
+
+    public OlympiadDTO getOlympiadDTO(Long id) {
         Olympiad olympiad = olympiadRepo.findById(id)
-                .orElseThrow(() -> new BadRequestException(HttpStatusCode.valueOf(401), "Olympiad not found"));
+                .orElseThrow(() -> new BadRequestException(ErrorCode.OLYMPIAD_NOT_FOUND));
 
         return olympiadMapper.toOlympiadDTO(olympiad);
     }
