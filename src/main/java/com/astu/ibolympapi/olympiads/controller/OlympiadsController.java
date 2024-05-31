@@ -1,6 +1,7 @@
 package com.astu.ibolympapi.olympiads.controller;
 
 import com.astu.ibolympapi.olympiads.dto.CreateOlympiadDTO;
+import com.astu.ibolympapi.olympiads.dto.OlympiadDTO;
 import com.astu.ibolympapi.olympiads.service.OlympiadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +14,12 @@ public class OlympiadsController {
     private final OlympiadService service;
 
     @PostMapping("/")
-    public ResponseEntity<?> createOlympiad(@RequestBody CreateOlympiadDTO createOlympiadDTO) {
+    public ResponseEntity<OlympiadDTO> createOlympiad(@RequestBody CreateOlympiadDTO createOlympiadDTO) {
         return ResponseEntity.ok(service.createOlympiad(createOlympiadDTO));
     }
 
     @GetMapping("/{olympiad_id}")
-    public ResponseEntity<?> getOlympiadById(@PathVariable Long olympiad_id) {
-        return ResponseEntity.ok(service.getOlympiad(olympiad_id));
+    public ResponseEntity<OlympiadDTO> getOlympiadById(@PathVariable Long olympiad_id) {
+        return ResponseEntity.ok(service.getOlympiadDTO(olympiad_id));
     }
 }
