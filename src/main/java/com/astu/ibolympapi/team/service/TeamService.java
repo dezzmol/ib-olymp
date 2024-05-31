@@ -12,11 +12,7 @@ import com.astu.ibolympapi.team.entity.Team;
 import com.astu.ibolympapi.team.mapper.TeamMapper;
 import com.astu.ibolympapi.team.repository.InviteTokenRepo;
 import com.astu.ibolympapi.team.repository.TeamRepo;
-import com.astu.ibolympapi.user.entities.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,10 +46,9 @@ public class TeamService {
     }
 
 
-
     public TeamDTO getTeam(Long teamId) {
         return teamMapper.toTeamDTO(repo.findById(teamId)
-                .orElseThrow(()-> new BadRequestException(ErrorCode.TEAM_NOT_FOUND)));
+                .orElseThrow(() -> new BadRequestException(ErrorCode.TEAM_NOT_FOUND)));
     }
 
     public String generateInviteLink() {
@@ -78,5 +73,27 @@ public class TeamService {
         inviteTokenRepo.save(inviteToken);
 
         return "http://localhost:8080/api/v1/student/joinTeam/" + inviteToken.getToken();
+    }
+
+    public void removeStudentFromTeam(Long studentId) {
+        Student optionalStudent = studentService.getStudentByAuthUser();
+
+        if (optionalStudent.getTeam() == null) {
+            throw new BadRequestException(ErrorCode.STUDENT_HAS_NOT_TEAM);
+        }
+
+        if (!optionalStudent.getIsCaptain()) {
+            throw new BadRequestException(ErrorCode.STUDENT_IS_NOT_CAPTAIN);
+        }
+
+        Team team = optionalStudent.getTeam();
+        Student studentForKick = studentService.getStudent(studentId);
+
+        if (!team.getStudents().contains(studentForKick)) {
+            throw new BadRequestException(ErrorCode.STUDENT_HAS_NOT_TEAM);
+        }
+
+        team.getStudents().remove(optionalStudent);
+        repo.save(team);
     }
 }

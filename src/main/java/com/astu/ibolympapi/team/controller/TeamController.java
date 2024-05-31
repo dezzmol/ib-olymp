@@ -27,4 +27,10 @@ public class TeamController {
     public ResponseEntity<String> inviteToTheTeam() {
         return ResponseEntity.ok(service.generateInviteLink());
     }
+
+    @DeleteMapping("/{studentId}")
+    public ResponseEntity<String> removeStudentFromTeam(@PathVariable Long studentId) {
+        service.removeStudentFromTeam(studentId);
+        return ResponseEntity.ok("Removed student from the team");
+    }
 }

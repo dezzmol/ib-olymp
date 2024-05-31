@@ -24,7 +24,8 @@ public enum ErrorCode {
     STUDENT_IS_NOT_CAPTAIN("Student is not captain", HttpStatusCode.valueOf(403)),
     TEAM_IS_FULL("Team is full", HttpStatusCode.valueOf(403)),
     TEAM_NOT_FOUND("Team not found", HttpStatusCode.valueOf(404)),
-    TOKEN_NOT_FOUND("Token not found", HttpStatusCode.valueOf(404));
+    TOKEN_NOT_FOUND("Token not found", HttpStatusCode.valueOf(404)),
+    OLYMPIAD_NOT_FOUND("Olympiad not found", HttpStatusCode.valueOf(404));
     private final String message;
     private final HttpStatusCode statusCode;
 }
