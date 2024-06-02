@@ -13,6 +13,8 @@ import com.astu.ibolympapi.user.services.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,11 +28,14 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
+@PropertySource("application.properties")
 public class AuthenticationService {
     private final UserService userService;
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
     private final MailService mailService;
+    @Value("${spring.server.url}")
+    private String serverUrl;
 
     public void signUp(SignUpRequest request) {
         userService.signUp(request);
@@ -64,7 +69,7 @@ public class AuthenticationService {
 
     public void sendActivationLink(SignUpRequest request) {
         String activateToken = tokenService.generateActivateToken(request.email(), TokenType.ACTIVATE_TOKEN);
-        String link = "http://localhost:8080/api/v1/auth/activate/" + activateToken;
+        String link = "http://" + serverUrl + "/api/v1/auth/activate/" + activateToken;
         mailService.sendSimpleEmail(request.email(), "Активация аккаунта", "Для активации аккаунта перейдите по ссылке " + link);
     }
 }

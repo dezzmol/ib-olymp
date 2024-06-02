@@ -13,18 +13,23 @@ import com.astu.ibolympapi.team.mapper.TeamMapper;
 import com.astu.ibolympapi.team.repository.InviteTokenRepo;
 import com.astu.ibolympapi.team.repository.TeamRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@PropertySource("application.properties")
 public class TeamService {
     private final TeamRepo repo;
     private final StudentRepo studentRepo;
     private final TeamMapper teamMapper;
     private final InviteTokenRepo inviteTokenRepo;
     private final StudentService studentService;
+    @Value("${spring.server.url}")
+    private String serverUrl;
 
     public TeamDTO createTeam(CreateTeamDTO createTeamDTO) {
         Student optionalStudent = studentService.getStudentByAuthUser();
@@ -72,7 +77,7 @@ public class TeamService {
 
         inviteTokenRepo.save(inviteToken);
 
-        return "http://localhost:8080/api/v1/student/joinTeam/" + inviteToken.getToken();
+        return "http://" + serverUrl + "/api/v1/student/joinTeam/" + inviteToken.getToken();
     }
 
     public void removeStudentFromTeam(Long studentId) {
