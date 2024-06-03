@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class AdminService {
     private final StudentService studentService;
 
-    public StudentDTO getStudent(Long id) {
+    public Student getStudent(Long id) {
         return studentService.getStudent(id);
     }
 }
