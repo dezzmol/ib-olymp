@@ -25,7 +25,10 @@ public enum ErrorCode {
     TEAM_IS_FULL("Team is full", HttpStatusCode.valueOf(403)),
     TEAM_NOT_FOUND("Team not found", HttpStatusCode.valueOf(404)),
     TOKEN_NOT_FOUND("Token not found", HttpStatusCode.valueOf(404)),
-    OLYMPIAD_NOT_FOUND("Olympiad not found", HttpStatusCode.valueOf(404));
+    OLYMPIAD_NOT_FOUND("Olympiad not found", HttpStatusCode.valueOf(404)),
+    CATEGORY_NOT_FOUND("Category not found", HttpStatusCode.valueOf(404)),
+    TASK_NOT_FOUND("Task not found", HttpStatusCode.valueOf(404)),
+    COUlD_NOT_STORE_FILE("Could Not Store File", HttpStatusCode.valueOf(404));
     private final String message;
     private final HttpStatusCode statusCode;
 }
