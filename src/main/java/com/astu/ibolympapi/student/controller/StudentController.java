@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class StudentController {
     private final StudentService service;
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<String> registration(@RequestBody StudentRegistrationDTO studentRegistrationDTO) {
         service.registration(studentRegistrationDTO);
         return ResponseEntity.ok("Student registered");
@@ -21,7 +21,7 @@ public class StudentController {
 
     @GetMapping("/{studentId}")
     public ResponseEntity<StudentDTO> getStudent(@PathVariable Long studentId) {
-        return ResponseEntity.ok(service.getStudent(studentId));
+        return ResponseEntity.ok(service.getStudentDTO(studentId));
     }
 
     @GetMapping("/joinTeam/{inviteToken}")
