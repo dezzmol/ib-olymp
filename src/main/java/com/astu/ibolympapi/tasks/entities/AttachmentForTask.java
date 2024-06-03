@@ -1,11 +1,17 @@
 package com.astu.ibolympapi.tasks.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "attachments_for_tasks")
+@Builder
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class AttachmentForTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,13 +3,19 @@ package com.astu.ibolympapi.tasks.entities;
 import com.astu.ibolympapi.olympiads.entities.Olympiad;
 import com.astu.ibolympapi.tasks.entities.Category;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Data
 @Entity
 @Table(name = "tasks")
+@Builder
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
