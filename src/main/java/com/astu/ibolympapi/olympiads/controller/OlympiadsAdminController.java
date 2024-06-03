@@ -8,18 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/olymp")
+@RequestMapping("/api/v1/olympadmin")
 @RequiredArgsConstructor
-public class OlympiadsController {
+public class OlympiadsAdminController {
     private final OlympiadService service;
 
     @PostMapping("/")
     public ResponseEntity<OlympiadDTO> createOlympiad(@RequestBody CreateOlympiadDTO createOlympiadDTO) {
         return ResponseEntity.ok(service.createOlympiad(createOlympiadDTO));
-    }
-
-    @GetMapping("/{olympiad_id}")
-    public ResponseEntity<OlympiadDTO> getOlympiadById(@PathVariable Long olympiad_id) {
-        return ResponseEntity.ok(service.getOlympiadDTO(olympiad_id));
     }
 }
