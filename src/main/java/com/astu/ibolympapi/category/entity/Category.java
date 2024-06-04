@@ -1,4 +1,4 @@
-package com.astu.ibolympapi.tasks.entities;
+package com.astu.ibolympapi.category.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

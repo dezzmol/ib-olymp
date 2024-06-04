@@ -1,4 +1,4 @@
-package com.astu.ibolympapi.tasks.dto;
+package com.astu.ibolympapi.category.dto;
 
 public record CreateCategoryDTO(
         String name,
