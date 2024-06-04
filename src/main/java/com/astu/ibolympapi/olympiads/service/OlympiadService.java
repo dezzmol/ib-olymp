@@ -3,15 +3,23 @@ package com.astu.ibolympapi.olympiads.service;
 import com.astu.ibolympapi.exceptions.BadRequestException;
 import com.astu.ibolympapi.exceptions.enums.ErrorCode;
 import com.astu.ibolympapi.olympiads.dto.CreateOlympiadDTO;
+import com.astu.ibolympapi.olympiads.dto.OlympiadApplicationsDTO;
 import com.astu.ibolympapi.olympiads.dto.OlympiadDTO;
 import com.astu.ibolympapi.olympiads.entities.Olympiad;
+import com.astu.ibolympapi.olympiads.entities.OlympiadApplication;
 import com.astu.ibolympapi.olympiads.mapper.OlympiadMapper;
+import com.astu.ibolympapi.olympiads.repositories.OlympiadApplicationRepo;
 import com.astu.ibolympapi.olympiads.repositories.OlympiadRepo;
+import com.astu.ibolympapi.student.entity.Student;
+import com.astu.ibolympapi.student.service.StudentService;
+import com.astu.ibolympapi.team.entity.Team;
+import com.astu.ibolympapi.team.mapper.TeamMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -19,6 +27,9 @@ import java.util.ArrayList;
 public class OlympiadService {
     private final OlympiadRepo olympiadRepo;
     private final OlympiadMapper olympiadMapper;
+    private final StudentService studentService;
+    private final OlympiadApplicationRepo olympiadApplicationRepo;
+    private final TeamMapper teamMapper;
 
     public OlympiadDTO createOlympiad(CreateOlympiadDTO newOlympiad) {
         Olympiad olympiad = Olympiad.builder()
@@ -45,5 +56,41 @@ public class OlympiadService {
                 .orElseThrow(() -> new BadRequestException(ErrorCode.OLYMPIAD_NOT_FOUND));
 
         return olympiadMapper.toOlympiadDTO(olympiad);
+    }
+
+    public void registrationOnOlympiad(Long olympiad_id) {
+        Olympiad olympiad = getOlympiad(olympiad_id);
+
+        Student student = studentService.getStudentByAuthUser();
+
+        if (student.getTeam() == null) {
+            throw new BadRequestException(ErrorCode.STUDENT_HAS_NOT_TEAM);
+        }
+
+        if (student.getIsCaptain()) {
+            throw new BadRequestException(ErrorCode.STUDENT_IS_NOT_CAPTAIN);
+        }
+
+        Team team = student.getTeam();
+
+        OlympiadApplication olympiadApplication = OlympiadApplication.builder()
+                .olympiad(olympiad)
+                .team(team)
+                .build();
+
+        olympiadApplicationRepo.save(olympiadApplication);
+    }
+
+    public OlympiadApplicationsDTO getOlympiadApplications(Long olympiad_id) {
+        OlympiadDTO olympiad = getOlympiadDTO(olympiad_id);
+
+        List<OlympiadApplication> olympiadApplications = olympiadApplicationRepo.getOlympiadApplicationByOlympiad(olympiad);
+        List<Team> teams = new ArrayList<>();
+
+        for (OlympiadApplication application : olympiadApplications) {
+            teams.add(application.getTeam());
+        }
+
+        return new OlympiadApplicationsDTO(olympiad, teamMapper.toTeamDTOs(teams));
     }
 }
