@@ -1,9 +1,10 @@
 package com.astu.ibolympapi.tasks.controller;
 
+import com.astu.ibolympapi.tasks.dto.AddTaskToOlympDTO;
 import com.astu.ibolympapi.tasks.dto.CreateAttachmentsDTO;
 import com.astu.ibolympapi.tasks.dto.CreateTaskDTO;
+import com.astu.ibolympapi.tasks.dto.TaskDTO;
 import com.astu.ibolympapi.tasks.entities.AttachmentForTask;
-import com.astu.ibolympapi.tasks.entities.Task;
 import com.astu.ibolympapi.tasks.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class TaskAdminController {
     private final TaskService taskService;
 
     @PostMapping("/")
-    public ResponseEntity<Task> createTask(@RequestBody CreateTaskDTO task) {
+    public ResponseEntity<TaskDTO> createTask(@RequestBody CreateTaskDTO task) {
         return ResponseEntity.ok(taskService.createTask(task));
     }
 
@@ -26,5 +27,11 @@ public class TaskAdminController {
             @RequestParam("file") MultipartFile file,
             @RequestBody CreateAttachmentsDTO createAttachmentsDTO) {
         return ResponseEntity.ok(taskService.createAttachmentForTask(file, createAttachmentsDTO));
+    }
+
+    @PostMapping("/addtoolymp")
+    public ResponseEntity<String> addTaskToOlympiad(@RequestBody AddTaskToOlympDTO addTaskToOlympDTO) {
+        taskService.addTaskToOlymp(addTaskToOlympDTO.taksId(), addTaskToOlympDTO.olympId());
+        return ResponseEntity.ok("Task added to olympiad");
     }
 }

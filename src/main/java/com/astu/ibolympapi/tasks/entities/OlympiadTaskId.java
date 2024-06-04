@@ -1,4 +1,4 @@
-package com.astu.ibolympapi.olympiads.entities;
+package com.astu.ibolympapi.tasks.entities;
 
 public class OlympiadTaskId {
     private Long olympiad;

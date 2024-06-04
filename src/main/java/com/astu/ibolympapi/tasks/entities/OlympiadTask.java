@@ -1,6 +1,6 @@
-package com.astu.ibolympapi.olympiads.entities;
+package com.astu.ibolympapi.tasks.entities;
 
-import com.astu.ibolympapi.tasks.entities.Task;
+import com.astu.ibolympapi.olympiads.entities.Olympiad;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

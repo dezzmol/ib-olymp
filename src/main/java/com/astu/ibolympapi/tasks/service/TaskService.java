@@ -1,17 +1,25 @@
 package com.astu.ibolympapi.tasks.service;
 
+import com.astu.ibolympapi.category.service.CategoryService;
 import com.astu.ibolympapi.exceptions.BadRequestException;
 import com.astu.ibolympapi.exceptions.enums.ErrorCode;
+import com.astu.ibolympapi.olympiads.entities.Olympiad;
+import com.astu.ibolympapi.olympiads.service.OlympiadService;
 import com.astu.ibolympapi.tasks.dto.CreateAttachmentsDTO;
 import com.astu.ibolympapi.tasks.dto.CreateTaskDTO;
+import com.astu.ibolympapi.tasks.dto.TaskDTO;
 import com.astu.ibolympapi.tasks.entities.AttachmentForTask;
-import com.astu.ibolympapi.tasks.entities.Category;
+import com.astu.ibolympapi.category.entity.Category;
+import com.astu.ibolympapi.tasks.entities.OlympiadTask;
 import com.astu.ibolympapi.tasks.entities.Task;
+import com.astu.ibolympapi.tasks.mapper.TaskMapper;
 import com.astu.ibolympapi.tasks.repository.AttachmentsRepo;
+import com.astu.ibolympapi.tasks.repository.OlympiadTaskRepo;
 import com.astu.ibolympapi.tasks.repository.TaskRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,14 +30,18 @@ import java.nio.file.Path;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@PropertySource("application.properties")
 public class TaskService {
     private final TaskRepo repo;
     private final CategoryService categoryService;
+    private final OlympiadService olympiadService;
     private final AttachmentsRepo attachmentsRepo;
+    private final OlympiadTaskRepo olympiadTaskRepo;
+    private final TaskMapper taskMapper;
     @Value("${file.upload-dir}")
     private String fileUploadDir;
 
-    public Task createTask(CreateTaskDTO taskDTO) {
+    public TaskDTO createTask(CreateTaskDTO taskDTO) {
         Category category = categoryService.getCategory(taskDTO.category_id());
 
         Task task = Task.builder()
@@ -39,7 +51,7 @@ public class TaskService {
                 .isOpen(false)
                 .build();
 
-        return repo.save(task);
+        return taskMapper.taskToTaskDTO(repo.save(task));
     }
 
     public Task getTaskById(Long id) {
@@ -74,5 +86,17 @@ public class TaskService {
         } catch (IOException e) {
             throw new BadRequestException(ErrorCode.COUlD_NOT_STORE_FILE);
         }
+    }
+
+    public void addTaskToOlymp(Long taksId, Long olympId) {
+        Task task = getTaskById(taksId);
+        Olympiad olympiad = olympiadService.getOlympiad(olympId);
+
+        OlympiadTask olympiadTask = OlympiadTask.builder()
+                .task(task)
+                .olympiad(olympiad)
+                .build();
+
+        olympiadTaskRepo.save(olympiadTask);
     }
 }

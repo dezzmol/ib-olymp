@@ -1,7 +1,7 @@
 package com.astu.ibolympapi.tasks.entities;
 
 import com.astu.ibolympapi.olympiads.entities.Olympiad;
-import com.astu.ibolympapi.tasks.entities.Category;
+import com.astu.ibolympapi.category.entity.Category;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,4 +36,7 @@ public class Task {
 
     @ManyToMany(mappedBy = "tasks")
     private List<Olympiad> olympiads;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AttachmentForTask> attachments;
 }
