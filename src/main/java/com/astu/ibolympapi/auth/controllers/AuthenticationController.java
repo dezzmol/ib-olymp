@@ -34,7 +34,7 @@ public class AuthenticationController {
     }
 
     @Operation(summary = "Activate account")
-    @PostMapping("/activate/{activate-token}")
+    @GetMapping("/activate/{activate-token}")
     public ResponseEntity<?> activate(@PathVariable("activate-token") String activateToken) {
         service.activate(activateToken);
         return null;
