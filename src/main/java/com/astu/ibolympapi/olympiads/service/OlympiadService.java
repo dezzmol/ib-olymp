@@ -82,7 +82,7 @@ public class OlympiadService {
     }
 
     public OlympiadApplicationsDTO getOlympiadApplications(Long olympiad_id) {
-        OlympiadDTO olympiad = getOlympiadDTO(olympiad_id);
+        Olympiad olympiad = getOlympiad(olympiad_id);
 
         List<OlympiadApplication> olympiadApplications = olympiadApplicationRepo.getOlympiadApplicationByOlympiad(olympiad);
         List<Team> teams = new ArrayList<>();
@@ -91,6 +91,6 @@ public class OlympiadService {
             teams.add(application.getTeam());
         }
 
-        return new OlympiadApplicationsDTO(olympiad, teamMapper.toTeamDTOs(teams));
+        return new OlympiadApplicationsDTO(olympiadMapper.toOlympiadDTO(olympiad), teamMapper.toTeamDTOs(teams));
     }
 }
