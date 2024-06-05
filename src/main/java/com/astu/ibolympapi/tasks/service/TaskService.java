@@ -58,6 +58,10 @@ public class TaskService {
         return repo.findById(id).orElseThrow(() -> new BadRequestException(ErrorCode.TASK_NOT_FOUND));
     }
 
+    public TaskDTO getTaskDTO(Long id) {
+        return taskMapper.taskToTaskDTO(getTaskById(id));
+    }
+
     public AttachmentForTask createAttachmentForTask(MultipartFile file, CreateAttachmentsDTO createAttachmentsDTO) {
         Task task = getTaskById(createAttachmentsDTO.taskId());
         String fileName = file.getOriginalFilename();

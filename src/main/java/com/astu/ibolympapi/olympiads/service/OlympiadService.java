@@ -12,6 +12,11 @@ import com.astu.ibolympapi.olympiads.repositories.OlympiadApplicationRepo;
 import com.astu.ibolympapi.olympiads.repositories.OlympiadRepo;
 import com.astu.ibolympapi.student.entity.Student;
 import com.astu.ibolympapi.student.service.StudentService;
+import com.astu.ibolympapi.tasks.dto.TaskDTO;
+import com.astu.ibolympapi.tasks.entities.OlympiadTask;
+import com.astu.ibolympapi.tasks.entities.Task;
+import com.astu.ibolympapi.tasks.repository.OlympiadTaskRepo;
+import com.astu.ibolympapi.tasks.service.TaskService;
 import com.astu.ibolympapi.team.entity.Team;
 import com.astu.ibolympapi.team.mapper.TeamMapper;
 import jakarta.transaction.Transactional;
@@ -30,6 +35,8 @@ public class OlympiadService {
     private final StudentService studentService;
     private final OlympiadApplicationRepo olympiadApplicationRepo;
     private final TeamMapper teamMapper;
+    private final OlympiadTaskRepo olympiadTaskRepo;
+    private final TaskService taskService;
 
     public OlympiadDTO createOlympiad(CreateOlympiadDTO newOlympiad) {
         Olympiad olympiad = Olympiad.builder()
@@ -92,5 +99,15 @@ public class OlympiadService {
         }
 
         return new OlympiadApplicationsDTO(olympiadMapper.toOlympiadDTO(olympiad), teamMapper.toTeamDTOs(teams));
+    }
+
+    public TaskDTO getOlympiadTask(Long olympiad_id, Long task_id) {
+        Olympiad olympiad = getOlympiad(olympiad_id);
+        Task task = taskService.getTaskById(task_id);
+
+        OlympiadTask olympiadTask = olympiadTaskRepo.getOlympiadTaskByOlympiadAndTask(olympiad, task)
+                .orElseThrow(() -> new BadRequestException(ErrorCode.TASK_IS_NOT_IN_OLYMPIAD));
+
+        return taskService.getTaskDTO(olympiadTask.getTask().getId());
     }
 }

@@ -28,6 +28,7 @@ public enum ErrorCode {
     OLYMPIAD_NOT_FOUND("Olympiad not found", HttpStatusCode.valueOf(404)),
     CATEGORY_NOT_FOUND("Category not found", HttpStatusCode.valueOf(404)),
     TASK_NOT_FOUND("Task not found", HttpStatusCode.valueOf(404)),
+    TASK_IS_NOT_IN_OLYMPIAD("Task is not in olympiad", HttpStatusCode.valueOf(403)),
     COUlD_NOT_STORE_FILE("Could Not Store File", HttpStatusCode.valueOf(404));
     private final String message;
     private final HttpStatusCode statusCode;
