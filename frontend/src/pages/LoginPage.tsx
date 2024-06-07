@@ -1,8 +1,9 @@
+import { LoginForm } from "@/modules/Login"
 
 const LoginPage = () => {
     return (
-        <main>
-            login
+        <main className={"flex flex-col items-center"}>
+            <LoginForm />
         </main>
     )
 }

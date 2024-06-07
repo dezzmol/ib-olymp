@@ -1,7 +1,7 @@
 
 const MainPage = () => {
     return (
-        <main>
+        <main className={"flex flex-col items-center"}>
             main
         </main>
     );
