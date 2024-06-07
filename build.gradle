@@ -43,6 +43,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	runtimeOnly "org.postgresql:postgresql"
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'org.apache.ant:ant:1.10.9'
 }
 
 tasks.named('test') {
