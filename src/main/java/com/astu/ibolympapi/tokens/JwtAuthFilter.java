@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tools.ant.types.selectors.SelectorUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -32,16 +33,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final TokenService tokenService;
     private final Web web;
     private static final List<String> ALLOWED_PATHS = List.of(
-            "/api/v1/auth",
+            "/api/v1/auth/**",
             "api/v1/test",
             "/v2/api-docs",
             "/actuator",
             "/error",
-            "/v3/api-docs",
+            "/v3/**",
+            "/v3/api-docs/**",
             "/swagger-resources",
             "/configuration/ui",
             "/configuration/security",
-            "/swagger-ui",
+            "/swagger-ui/**",
             "/webjars",
             "/swagger-ui.html",
             "/ws/**",
@@ -71,7 +73,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private boolean isRequestAllowedWithoutAuthentication(HttpServletRequest request) {
         String requestPath = request.getServletPath();
-        return ALLOWED_PATHS.stream().anyMatch(requestPath::contains);
+        return ALLOWED_PATHS.stream().anyMatch(path ->
+                SelectorUtils.match(path, requestPath));
     }
 
     private void authenticateUserIfNecessary(String username, String jwt, HttpServletRequest request) {
