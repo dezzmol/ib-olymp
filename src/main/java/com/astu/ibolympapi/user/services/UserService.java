@@ -3,8 +3,10 @@ package com.astu.ibolympapi.user.services;
 import com.astu.ibolympapi.exceptions.BadRequestException;
 import com.astu.ibolympapi.exceptions.enums.ErrorCode;
 import com.astu.ibolympapi.user.dto.SignUpRequest;
+import com.astu.ibolympapi.user.dto.UserDTO;
 import com.astu.ibolympapi.user.entities.User;
 import com.astu.ibolympapi.user.enums.Role;
+import com.astu.ibolympapi.user.mapper.UserMapper;
 import com.astu.ibolympapi.user.repositories.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepo repository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper mapper;
 
     public Optional<User> findByEmail(String email) {
         return repository.findByEmail(email);
@@ -59,5 +62,11 @@ public class UserService {
 
     public void save(User user) {
         repository.save(user);
+    }
+
+    public UserDTO getUserDTO(String username) {
+        return mapper.toUserDTO(repository.findByUsername(username).orElseThrow(
+                () -> new BadRequestException(ErrorCode.USER_NOT_FOUND)
+        ));
     }
 }
