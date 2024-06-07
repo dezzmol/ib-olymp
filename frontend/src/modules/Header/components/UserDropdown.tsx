@@ -17,7 +17,7 @@ const UserDropdown: FC<UserDropDownProps> = ({userName, logout}) => {
                 className="flex items-center justify-center w-40 h-20 transition-all duration-500 group-hover:bg-my-blue"
             >
                 <b className="text-xl font-normal font-russo text-my-blue group-hover:text-my-dark">
-                    {userName.toUpperCase()}
+                    {userName}
                 </b>
             </Link>
 
