@@ -8,7 +8,9 @@ import com.astu.ibolympapi.tokens.TokenService;
 import com.astu.ibolympapi.tokens.TokenType;
 import com.astu.ibolympapi.user.dto.SignInRequest;
 import com.astu.ibolympapi.user.dto.SignUpRequest;
+import com.astu.ibolympapi.user.dto.UserDTO;
 import com.astu.ibolympapi.user.entities.User;
+import com.astu.ibolympapi.user.repositories.UserRepo;
 import com.astu.ibolympapi.user.services.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,8 +25,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
@@ -34,6 +34,7 @@ public class AuthenticationService {
     private final TokenService tokenService;
     private final AuthenticationManager authenticationManager;
     private final MailService mailService;
+    private final UserRepo userRepo;
     @Value("${spring.server.url}")
     private String serverUrl;
 
@@ -54,22 +55,51 @@ public class AuthenticationService {
         String refreshToken = tokenService.generateRefreshToken(authRequest.username(), TokenType.REFRESH_TOKEN);
         Cookie cookie = new Cookie(TokenType.REFRESH_TOKEN.toString(), refreshToken);
         response.addCookie(cookie);
-        return new AuthenticationResponse(TokenType.REFRESH_TOKEN.name() , accessToken, TokenType.ACCESS_TOKEN.getTokenExpiration());
+        return new AuthenticationResponse(TokenType.ACCESS_TOKEN.name(), accessToken, TokenType.ACCESS_TOKEN.getTokenExpiration());
     }
 
     public void activate(String activateToken) {
-        try {
-            String email = tokenService.extractUsernameFromJWT(activateToken);
-            Optional<User> user = userService.findByEmail(email);
-            user.ifPresent(userService::save);
-        } catch (RuntimeException e) {
-            throw new BadRequestException(ErrorCode.USER_NOT_FOUND);
-        }
+        String username = tokenService.extractUsernameFromJWT(activateToken);
+        System.out.println(username);
+        User user = userService.findByUsername(username).orElseThrow(
+                () -> new BadRequestException(ErrorCode.USER_NOT_FOUND)
+        );
+
+        user.setActive(true);
+        userRepo.save(user);
     }
 
     public void sendActivationLink(SignUpRequest request) {
-        String activateToken = tokenService.generateActivateToken(request.email(), TokenType.ACTIVATE_TOKEN);
+        String activateToken = tokenService.generateActivateToken(request.username(), TokenType.ACTIVATE_TOKEN);
         String link = "http://" + serverUrl + "/api/v1/auth/activate/" + activateToken;
         mailService.sendSimpleEmail(request.email(), "Активация аккаунта", "Для активации аккаунта перейдите по ссылке " + link);
+    }
+
+    public AuthenticationResponse refreshAccessToken(String refreshToken, HttpServletResponse response) {
+        if (!tokenService.validateToken(refreshToken)) {
+            logout(response);
+            throw new BadRequestException(ErrorCode.INVALID_REFRESH_TOKEN);
+        }
+
+        String username = tokenService.extractUsernameFromJWT(refreshToken);
+        User user = userService.findByUsername(username)
+                .orElseThrow(() -> new BadRequestException(ErrorCode.USER_NOT_FOUND));
+
+        String newAccessToken = tokenService.generateAccessToken(username, TokenType.ACCESS_TOKEN);
+
+        return new AuthenticationResponse(TokenType.ACCESS_TOKEN.name(), newAccessToken, TokenType.ACCESS_TOKEN.getTokenExpiration());
+    }
+
+    private void logout(HttpServletResponse response) {
+        SecurityContextHolder.clearContext();
+        Cookie cookie = new Cookie(TokenType.REFRESH_TOKEN.toString(), null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+    }
+
+    public UserDTO getData(String refreshToken) {
+        String username = tokenService.extractUsernameFromJWT(refreshToken);
+
+        return userService.getUserDTO(username);
     }
 }
