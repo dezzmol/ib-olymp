@@ -9,7 +9,6 @@ interface IUserSlice {
     surname: string | null
     patronymic: string | null
     role: string | null
-    isAuth: boolean
 }
 
 const initialState: IUserSlice = {
@@ -20,7 +19,6 @@ const initialState: IUserSlice = {
     surname: null,
     patronymic: null,
     role: null,
-    isAuth: false
 }
 
 const userSlice = createSlice({
@@ -35,7 +33,6 @@ const userSlice = createSlice({
             state.surname = action.payload.surname;
             state.patronymic = action.payload.patronymic;
             state.role = action.payload.role;
-            state.isAuth = true;
         },
         deleteUser: (state) => {
             state.id = null
@@ -45,8 +42,6 @@ const userSlice = createSlice({
             state.surname = null
             state.patronymic = null
             state.role = null
-            state.isAuth = false;
-            localStorage.setItem("accessToken", "")
         }
     }
 })
