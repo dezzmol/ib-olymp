@@ -11,6 +11,7 @@ public enum ErrorCode {
     INVALID_CREDENTIALS("Invalid credentials", HttpStatusCode.valueOf(401)),
     EXPIRED_TOKEN("Expired token", HttpStatusCode.valueOf(401)),
     INVALID_ACCESS_TOKEN("Invalid access token", HttpStatusCode.valueOf(401)),
+    INVALID_REFRESH_TOKEN("Invalid refresh token", HttpStatusCode.valueOf(401)),
     EMAIL_NOT_VERIFIED("Email not verified", HttpStatusCode.valueOf(403)),
     EMAIL_ALREADY_REGISTERED("Email already registered", HttpStatusCode.valueOf(403)),
     ERROR_WHILE_SENDING_LETTER("Error while sending letter", HttpStatusCode.valueOf(400)),
