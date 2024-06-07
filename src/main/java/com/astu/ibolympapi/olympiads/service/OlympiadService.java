@@ -110,4 +110,16 @@ public class OlympiadService {
 
         return taskService.getTaskDTO(olympiadTask.getTask().getId());
     }
+
+    public void addTaskToOlymp(Long taksId, Long olympId) {
+        Task task = taskService.getTaskById(taksId);
+        Olympiad olympiad = getOlympiad(olympId);
+
+        OlympiadTask olympiadTask = OlympiadTask.builder()
+                .task(task)
+                .olympiad(olympiad)
+                .build();
+
+        olympiadTaskRepo.save(olympiadTask);
+    }
 }

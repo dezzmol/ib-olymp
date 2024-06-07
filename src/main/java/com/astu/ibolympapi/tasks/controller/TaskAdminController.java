@@ -28,10 +28,4 @@ public class TaskAdminController {
             @RequestBody CreateAttachmentsDTO createAttachmentsDTO) {
         return ResponseEntity.ok(taskService.createAttachmentForTask(file, createAttachmentsDTO));
     }
-
-    @PostMapping("/addtoolymp")
-    public ResponseEntity<String> addTaskToOlympiad(@RequestBody AddTaskToOlympDTO addTaskToOlympDTO) {
-        taskService.addTaskToOlymp(addTaskToOlympDTO.taksId(), addTaskToOlympDTO.olympId());
-        return ResponseEntity.ok("Task added to olympiad");
-    }
 }

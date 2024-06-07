@@ -34,9 +34,7 @@ import java.nio.file.Path;
 public class TaskService {
     private final TaskRepo repo;
     private final CategoryService categoryService;
-    private final OlympiadService olympiadService;
     private final AttachmentsRepo attachmentsRepo;
-    private final OlympiadTaskRepo olympiadTaskRepo;
     private final TaskMapper taskMapper;
     @Value("${file.upload-dir}")
     private String fileUploadDir;
@@ -92,15 +90,5 @@ public class TaskService {
         }
     }
 
-    public void addTaskToOlymp(Long taksId, Long olympId) {
-        Task task = getTaskById(taksId);
-        Olympiad olympiad = olympiadService.getOlympiad(olympId);
 
-        OlympiadTask olympiadTask = OlympiadTask.builder()
-                .task(task)
-                .olympiad(olympiad)
-                .build();
-
-        olympiadTaskRepo.save(olympiadTask);
-    }
 }
