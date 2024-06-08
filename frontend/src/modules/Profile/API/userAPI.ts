@@ -3,13 +3,13 @@ import { User } from "../types"
 
 const userAPI = baseAPI.injectEndpoints({
     endpoints: (build) => ({
-        getUser: build.query<User, void>({
+        getUser: build.mutation<User, void>({
             query: () => ({
                 url: "/auth/getdata",
-                method: "GET"
+                method: "POST"
             })
         })
     })
 })
 
-export const { useGetUserQuery } = userAPI
+export const { useGetUserMutation } = userAPI
