@@ -5,6 +5,7 @@ import { BASE_API_URL } from "@/utils/consts.ts"
 
 const baseQuery = fetchBaseQuery({
     baseUrl: BASE_API_URL,
+    credentials: "include",
     prepareHeaders: (headers) => {
         const token = localStorage.getItem("accessToken")
         if (token) {
