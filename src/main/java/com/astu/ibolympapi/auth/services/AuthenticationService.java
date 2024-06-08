@@ -90,7 +90,7 @@ public class AuthenticationService {
         return new AuthenticationResponse(TokenType.ACCESS_TOKEN.name(), newAccessToken, TokenType.ACCESS_TOKEN.getTokenExpiration());
     }
 
-    private void logout(HttpServletResponse response) {
+    public void logout(HttpServletResponse response) {
         SecurityContextHolder.clearContext();
         Cookie cookie = new Cookie(TokenType.REFRESH_TOKEN.toString(), null);
         cookie.setMaxAge(0);

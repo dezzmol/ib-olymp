@@ -59,4 +59,10 @@ public class AuthenticationController {
     public ResponseEntity<UserDTO> getData(@CookieValue("REFRESH_TOKEN") String refreshToken) {
         return ResponseEntity.ok(service.getData(refreshToken));
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        service.logout(response);
+        return ResponseEntity.ok("logout");
+    }
 }
