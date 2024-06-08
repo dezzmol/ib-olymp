@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class Web {
     private final List<String> allowedOrigins = List.of(
-            "http://*.example.com/*" //TODO: add frontend url
+            "http://localhost:5173"
     );
 
     private final List<String> allowedPaths = List.of(
