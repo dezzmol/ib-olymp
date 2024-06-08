@@ -56,7 +56,7 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration corsConfiguration = new CorsConfiguration();
                     corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
-                    corsConfiguration.setAllowedOriginPatterns(web.getAllowedOrigins());
+                    corsConfiguration.setAllowedOrigins(web.getAllowedOrigins());
                     corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
                     corsConfiguration.setAllowCredentials(true);
                     corsConfiguration.setExposedHeaders(List.of("Authorization"));
@@ -77,7 +77,7 @@ public class SecurityConfiguration {
                 .authenticationProvider(authProvider)
 
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .logout(logout -> logout.logoutUrl("/api/v1/auth/logout"))
+                .logout(logout -> logout.logoutUrl("/api/v1/logout"))
                 .build();
     }
 }
