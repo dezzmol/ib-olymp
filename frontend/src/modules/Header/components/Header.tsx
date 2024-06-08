@@ -1,15 +1,22 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import logo from "@/assets/images/AGTU_zoloto1.png"
 import UserDropdown from "@/modules/Header/components/UserDropdown.tsx"
 import { useAppDispatch, useAppSelector } from "@/hooks/useTypedStore.ts"
 import { deleteUser } from "@/store/slice/userSlice.ts"
+import { logout } from "@/store/slice/authSlice.ts"
+import { authAPI } from "@/modules/Login/API/authAPI.ts"
 
 const Header = () => {
-    const { isAuth, username, role } = useAppSelector((state) => state.userReducer)
+    const { username, role } = useAppSelector((state) => state.userReducer)
+    const { isAuth } = useAppSelector((state) => state.authReducer)
     const dispatch = useAppDispatch()
-
-    const userLogout = () => {
+    const navigate = useNavigate()
+    const [logoutReq] = authAPI.useLogoutMutation()
+    const userLogout = async () => {
+        await logoutReq()
         dispatch(deleteUser())
+        dispatch(logout())
+        navigate("/")
     }
 
     return (

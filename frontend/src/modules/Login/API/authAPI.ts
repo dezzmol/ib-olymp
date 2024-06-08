@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import { User } from "@/modules/Profile"
 import { AuthDTO, IToken } from "@/modules/Login"
 import { BASE_API_URL } from "@/utils/consts.ts"
+import { RegisterDTO } from "@/modules/Login/types"
 
 export const authAPI = createApi({
     reducerPath: "auth",
@@ -10,7 +10,7 @@ export const authAPI = createApi({
         credentials: "include"
     }),
     endpoints: (build) => ({
-        register: build.mutation<void, User>({
+        register: build.mutation<void, RegisterDTO>({
             query: (body) => ({
                 url: "/sign-up",
                 method: "POST",
