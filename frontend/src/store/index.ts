@@ -3,10 +3,12 @@ import userSlice from "@/store/slice/userSlice.ts"
 import authSlice from "@/store/slice/authSlice.ts"
 import { baseAPI } from "@/API/baseAPI.ts"
 import { authAPI } from "@/modules/Login/API/authAPI.ts"
+import studentSlice from "@/store/slice/studentSlice.ts"
 
 const rootReducer = combineReducers({
     userReducer: userSlice,
     authReducer: authSlice,
+    studentReducer: studentSlice,
     [baseAPI.reducerPath]: baseAPI.reducer,
     [authAPI.reducerPath]: authAPI.reducer
 })
