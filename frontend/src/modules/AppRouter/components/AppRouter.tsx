@@ -1,8 +1,10 @@
 import { Navigate, Route, Routes } from "react-router-dom"
 import { privatePages, publicPages } from "@/modules/AppRouter/routes"
+import { useAppSelector } from "@/hooks/useTypedStore.ts"
 
 const AppRouter = () => {
-    const isAuth = true
+    const { isAuth } = useAppSelector((state) => state.authReducer)
+
     return (
         <Routes>
             {isAuth &&
