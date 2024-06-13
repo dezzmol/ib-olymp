@@ -39,8 +39,21 @@ export const useSignUp: useSignUp = (
     ] = authAPI.useRegisterMutation()
     const [errorMessage, setErrorMessage] = useState<string>("")
 
+    function testInput(str: string): boolean {
+        const englishLettersRegex = /^[A-Za-z]+$/;
+        return englishLettersRegex.test(str);
+    }
+
     const signUp = async (): Promise<void> => {
         const error: string = validateFn()
+
+        if (
+            testInput(usernameValue) ||
+            testInput(emailValue) ||
+            testInput(passwordValue)
+        ) {
+            return;
+        }
 
         if (error) {
             return
