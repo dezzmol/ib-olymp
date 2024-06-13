@@ -1,11 +1,14 @@
 package com.astu.ibolympapi.tokens;
 
 import com.astu.ibolympapi.exceptions.BadRequestException;
+import com.astu.ibolympapi.exceptions.dto.ErrorDTO;
 import com.astu.ibolympapi.exceptions.enums.ErrorCode;
+import com.astu.ibolympapi.exceptions.handlers.UnauthorizedException;
 import com.astu.ibolympapi.user.entities.User;
 import com.astu.ibolympapi.user.services.UserService;
 import com.astu.ibolympapi.web.Web;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +16,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tools.ant.types.selectors.SelectorUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -22,6 +27,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -32,6 +38,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserService userService;
     private final TokenService tokenService;
     private final Web web;
+    private final ObjectMapper mapper;
     private static final List<String> ALLOWED_PATHS = List.of(
             "/api/v1/auth/**",
             "api/v1/test",
@@ -55,7 +62,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @SuppressWarnings("null")
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+            throws ServletException, IOException, BadRequestException {
         if (isRequestAllowedWithoutAuthentication(request)) {
             filterChain.doFilter(request, response);
             return;
@@ -65,7 +72,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String username = tokenService.extractUsernameFromJWT(jwt);
             authenticateUserIfNecessary(username, jwt, request);
         } catch (JWTVerificationException e) {
-            throw new BadRequestException(ErrorCode.INVALID_ACCESS_TOKEN);
+            sendErrorResponse(new UnauthorizedException(ErrorCode.INVALID_ACCESS_TOKEN), response, request);
         }
 
         filterChain.doFilter(request, response);
@@ -84,6 +91,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+            } else {
+                throw new BadRequestException(ErrorCode.INVALID_ACCESS_TOKEN);
             }
         }
     }
@@ -96,5 +105,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         return null;
+    }
+
+    private void sendErrorResponse(UnauthorizedException e, HttpServletResponse response, HttpServletRequest request) throws IOException {
+            ErrorDTO errorDTO = ErrorDTO.builder()
+                    .message(e.getMessage())
+                    .errorCode(e.getMessage())
+                    .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                    .statusCode(HttpStatus.UNAUTHORIZED.value())
+                    .path(request.getRequestURI())
+                    .timestamp(LocalDateTime.now())
+                    .build();
+         response.setStatus(HttpStatus.UNAUTHORIZED.value());
+         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+         response.getWriter().write(mapper.writeValueAsString(errorDTO));
     }
 }
