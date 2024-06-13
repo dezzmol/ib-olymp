@@ -12,7 +12,8 @@ export default {
                 "my-white": "#fbfbfb",
                 "my-copper": "#d28536",
                 "my-dark2": "#222222",
-                "my-gray2": "#2e2e2e"
+                "my-gray2": "#2e2e2e",
+                "my-modal-bg": "#00000080"
             },
             width: {
                 1500: "1500px",
