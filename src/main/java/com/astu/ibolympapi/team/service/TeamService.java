@@ -50,6 +50,21 @@ public class TeamService {
         return teamMapper.toTeamDTO(team);
     }
 
+    public TeamDTO getTeamByUser() {
+        Student student = studentService.getStudentByAuthUser();
+
+        if (student.getTeam() == null) {
+            throw new BadRequestException(ErrorCode.STUDENT_HAS_NOT_TEAM);
+        }
+
+        if (!student.getIsCaptain()) {
+            throw new BadRequestException(ErrorCode.STUDENT_IS_NOT_CAPTAIN);
+        }
+
+        Team team = student.getTeam();
+
+        return teamMapper.toTeamDTO(team);
+    }
 
     public TeamDTO getTeam(Long teamId) {
         return teamMapper.toTeamDTO(repo.findById(teamId)

@@ -13,9 +13,14 @@ import org.springframework.web.bind.annotation.*;
 public class TeamController {
     private final TeamService service;
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<TeamDTO> createTeam(@RequestBody CreateTeamDTO createTeamDTO) {
         return ResponseEntity.ok(service.createTeam(createTeamDTO));
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<TeamDTO> getTeamByUser() {
+        return ResponseEntity.ok(service.getTeamByUser());
     }
 
     @GetMapping("/{teamId}")
