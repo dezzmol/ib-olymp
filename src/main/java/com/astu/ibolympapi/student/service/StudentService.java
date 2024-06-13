@@ -63,6 +63,20 @@ public class StudentService {
         ));
     }
 
+    public StudentDTO getStudentDTO() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        User user = null;
+        if (principal instanceof UserDetails) {
+            user = (User) ((UserDetails) principal);
+        }
+
+        Student student = repo.findByUser(user)
+                .orElseThrow(() -> new BadRequestException(ErrorCode.STUDENT_NOT_FOUND));
+
+        return studentMapper.toStudentDTO(student);
+    }
+
     public Student getStudent(Long id) {
         return repo.findById(id).orElseThrow(
                 () -> new BadRequestException(ErrorCode.STUDENT_NOT_FOUND)

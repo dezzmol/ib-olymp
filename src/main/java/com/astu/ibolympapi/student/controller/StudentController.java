@@ -24,6 +24,11 @@ public class StudentController {
         return ResponseEntity.ok(service.getStudentDTO(studentId));
     }
 
+    @GetMapping("/")
+    public ResponseEntity<StudentDTO> getStudentByUser() {
+        return ResponseEntity.ok(service.getStudentDTO());
+    }
+
     @GetMapping("/joinTeam/{inviteToken}")
     public ResponseEntity<String> joinTeam(@PathVariable String inviteToken) {
         service.joinTeam(inviteToken);
