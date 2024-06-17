@@ -1,8 +1,9 @@
+import AdminForm from "@/modules/Admin/components/AdminForm.tsx"
 
 const AdminPage = () => {
     return (
-        <main>
-            admin
+        <main className="flex flex-col items-center min-h-[91vh] bg-my-white">
+            <AdminForm />
         </main>
     )
 }
