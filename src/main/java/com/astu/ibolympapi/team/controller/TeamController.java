@@ -25,7 +25,7 @@ public class TeamController {
 
     @GetMapping("/{teamId}")
     public ResponseEntity<TeamDTO> getTeam(@PathVariable Long teamId) {
-        return ResponseEntity.ok(service.getTeam(teamId));
+        return ResponseEntity.ok(service.getTeamDTO(teamId));
     }
 
     @PostMapping("/generateLink")

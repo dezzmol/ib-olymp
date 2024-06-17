@@ -66,9 +66,14 @@ public class TeamService {
         return teamMapper.toTeamDTO(team);
     }
 
-    public TeamDTO getTeam(Long teamId) {
+    public TeamDTO getTeamDTO(Long teamId) {
         return teamMapper.toTeamDTO(repo.findById(teamId)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.TEAM_NOT_FOUND)));
+    }
+
+    public Team getTeam(Long teamId) {
+        return repo.findById(teamId)
+                .orElseThrow(() -> new BadRequestException(ErrorCode.TEAM_NOT_FOUND));
     }
 
     public String generateInviteLink() {
