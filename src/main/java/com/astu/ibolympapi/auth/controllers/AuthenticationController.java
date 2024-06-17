@@ -49,7 +49,7 @@ public class AuthenticationController {
     }
 
     @Operation(summary = "Refresh access token")
-    @PostMapping("/refresh")
+    @GetMapping("/refresh")
     public ResponseEntity<AuthenticationResponse> refreshToken(@CookieValue("REFRESH_TOKEN") String refreshToken, HttpServletResponse response) {
         return ResponseEntity.ok(service.refreshAccessToken(refreshToken, response));
     }
