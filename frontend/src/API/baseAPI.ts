@@ -1,7 +1,15 @@
-import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from "@reduxjs/toolkit/query/react"
+import {
+    BaseQueryFn,
+    createApi,
+    FetchArgs,
+    fetchBaseQuery,
+    FetchBaseQueryError,
+    FetchBaseQueryMeta
+} from "@reduxjs/toolkit/query/react"
 import { deleteUser } from "@/store/slice/userSlice.ts"
 import { login, logout } from "@/store/slice/authSlice.ts"
 import { BASE_API_URL } from "@/utils/consts.ts"
+import { QueryReturnValue } from "@reduxjs/toolkit/dist/query/baseQueryTypes"
 
 const baseQuery = fetchBaseQuery({
     baseUrl: BASE_API_URL,
@@ -15,6 +23,12 @@ const baseQuery = fetchBaseQuery({
     },
 });
 
+interface IAuthResponse {
+    tokenType: string
+    accessToken: string
+    expires: number
+}
+
 const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
     args,
     api,
@@ -22,11 +36,11 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 ) => {
     let result = await baseQuery(args, api, extraOptions);
 
-    if (result.error && result.error.data == "Invalid access token" && result.error.status === 401) {
-        const refreshResult = await baseQuery('/auth/refresh', api, extraOptions);
+    if (result.error && result.error.status === 403) {
+        const refreshResult: QueryReturnValue<IAuthResponse, FetchBaseQueryError, FetchBaseQueryMeta> = await baseQuery('/auth/refresh', api, extraOptions);
 
-        if (refreshResult.data) {
-            api.dispatch(login(refreshResult.data as string));
+        if (refreshResult.data && refreshResult.data.accessToken) {
+            api.dispatch(login(refreshResult.data.accessToken));
 
             // retry the initial query
             result = await baseQuery(args, api, extraOptions);
