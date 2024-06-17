@@ -25,6 +25,12 @@ public class OlympiadsAdminController {
         return ResponseEntity.ok(service.getOlympiadApplications(olympiad_id));
     }
 
+    @PostMapping("/{olympiad_id}/accept/{team_id}")
+    public ResponseEntity<String> acceptTeam(@PathVariable Long olympiad_id, @PathVariable Long team_id) {
+        service.acceptTeam(olympiad_id, team_id);
+        return ResponseEntity.ok("Team accepted");
+    }
+
     @PostMapping("/addtask")
     public ResponseEntity<String> addTaskToOlympiad(@RequestBody AddTaskToOlympDTO addTaskToOlympDTO) {
         service.addTaskToOlymp(addTaskToOlympDTO.taksId(), addTaskToOlympDTO.olympId());

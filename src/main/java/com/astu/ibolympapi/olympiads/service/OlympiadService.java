@@ -7,9 +7,11 @@ import com.astu.ibolympapi.olympiads.dto.OlympiadApplicationsDTO;
 import com.astu.ibolympapi.olympiads.dto.OlympiadDTO;
 import com.astu.ibolympapi.olympiads.entities.Olympiad;
 import com.astu.ibolympapi.olympiads.entities.OlympiadApplication;
+import com.astu.ibolympapi.olympiads.entities.OlympiadTeams;
 import com.astu.ibolympapi.olympiads.mapper.OlympiadMapper;
 import com.astu.ibolympapi.olympiads.repositories.OlympiadApplicationRepo;
 import com.astu.ibolympapi.olympiads.repositories.OlympiadRepo;
+import com.astu.ibolympapi.olympiads.repositories.OlympiadTeamsRepo;
 import com.astu.ibolympapi.student.entity.Student;
 import com.astu.ibolympapi.student.service.StudentService;
 import com.astu.ibolympapi.tasks.dto.TaskDTO;
@@ -19,12 +21,14 @@ import com.astu.ibolympapi.tasks.repository.OlympiadTaskRepo;
 import com.astu.ibolympapi.tasks.service.TaskService;
 import com.astu.ibolympapi.team.entity.Team;
 import com.astu.ibolympapi.team.mapper.TeamMapper;
+import com.astu.ibolympapi.team.service.TeamService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -36,7 +40,9 @@ public class OlympiadService {
     private final OlympiadApplicationRepo olympiadApplicationRepo;
     private final TeamMapper teamMapper;
     private final OlympiadTaskRepo olympiadTaskRepo;
+    private final OlympiadTeamsRepo olympiadTeamsRepo;
     private final TaskService taskService;
+    private final TeamService teamService;
 
     public OlympiadDTO createOlympiad(CreateOlympiadDTO newOlympiad) {
         Olympiad olympiad = Olympiad.builder()
@@ -125,5 +131,26 @@ public class OlympiadService {
                 .build();
 
         olympiadTaskRepo.save(olympiadTask);
+    }
+
+    public void acceptTeam(Long olympiad_id, Long team_id) {
+        Olympiad olympiad = getOlympiad(olympiad_id);
+        Team team = teamService.getTeam(team_id);
+
+        OlympiadApplication olympiadApplication = olympiadApplicationRepo.getOlympiadApplicationByOlympiadAndTeam(olympiad, team)
+                .orElseThrow(() -> new BadRequestException(ErrorCode.APPLICATION_IS_NOT_EXIST));
+
+        Optional<OlympiadTeams> olympiadTeams = olympiadTeamsRepo.findOlympiadTeamsByOlympiadAndTeam(olympiad, team);
+
+        if (olympiadTeams.isPresent()) {
+            throw new BadRequestException(ErrorCode.TEAM_ALREADY_REGISTERED_ON_OLYMPIAD);
+        }
+
+        OlympiadTeams newOlympiadTeams = OlympiadTeams.builder()
+                .olympiad(olympiad)
+                .team(team)
+                .build();
+
+        olympiadTeamsRepo.save(newOlympiadTeams);
     }
 }
