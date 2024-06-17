@@ -8,6 +8,7 @@ public record UserDTO(
         String name,
         String surname,
         String patronymic,
-        String email
+        String email,
+        String role
 ) implements Serializable {
 }
