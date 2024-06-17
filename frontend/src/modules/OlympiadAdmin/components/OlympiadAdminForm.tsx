@@ -32,7 +32,7 @@ const OlympiadAdminForm = () => {
 
     const handleSubmitCreating = async () => {
         startDate.setHours(0, 0, 0, 0)
-        endDate.setHours(0, 0, 0, 0, 0)
+        endDate.setHours(0, 0, 0, 0)
 
         if (startDate > endDate) {
             return
@@ -44,7 +44,7 @@ const OlympiadAdminForm = () => {
             startDate: startDate,
             endDate: endDate
         })
-        await refetchOlympiads
+        await refetchOlympiads()
     }
 
     return (
@@ -59,7 +59,7 @@ const OlympiadAdminForm = () => {
             <h2>Запланированные олимпиады</h2>
             <div>
                 {olympiads && olympiads.map(olympiad => (
-                    <div className="p-2 m-2 bg-gray-200 rounded">
+                    <div key={olympiad.id} className="p-2 m-2 bg-gray-200 rounded" onClick={() => navigate("/olympadmin/olympiads/" + olympiad.id)}>
                         <h2>Название: {olympiad.name}</h2>
                         <p>Дата начала: {new Date(olympiad.startDate).toDateString()}</p>
                         <p>Дата конца: {new Date(olympiad.endDate).toDateString()}</p>
