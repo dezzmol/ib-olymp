@@ -8,7 +8,7 @@ export default {
             },
             colors: {
                 "my-dark": "#303030",
-                "my-blue": "#aaf5ff",
+                "my-blue": "#f3fdff",
                 "my-white": "#fbfbfb",
                 "my-copper": "#d28536",
                 "my-dark2": "#222222",
