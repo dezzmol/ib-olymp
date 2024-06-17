@@ -14,7 +14,7 @@ const ProfileForm = () => {
     }, [])
 
     return (
-        <section className="flex gap-0.5 max-w-1150 flex-col">
+        <section className="flex gap-0.5 w-[400px] flex-col">
             <div>
                 Логин: {username}
             </div>

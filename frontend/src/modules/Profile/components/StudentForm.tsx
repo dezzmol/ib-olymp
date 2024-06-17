@@ -54,7 +54,7 @@ const StudentForm = () => {
     }
 
     return (
-        <section className="flex gap-0.5 max-w-1150 flex-col">
+        <section className="flex gap-0.5 w-[400px] flex-col">
             {student ?
                 <div>
                     <div>
@@ -74,51 +74,59 @@ const StudentForm = () => {
                 <div>
                     <button
                         onClick={changeModalVisible}
+                        className="rounded-[5px] bg-my-dark text-my-white p-2"
                     >
                         Зарегистрировать студента
                     </button>
                 </div>
             }
             <Modal visible={modalVisible} setVisible={setModalVisible} >
-                <h2>Зарегистрировать студента</h2>
-                <div>
-                    <input
-                        value={ageValue}
-                        onChange={(e) => setAgeValue(Number(e.target.value))}
-                        min={18}
-                        placeholder={"Возраст"}
-                        type={"number"}
-                    />
+                <div className="flex flex-col gap-2">
+                    <h2>Зарегистрировать студента</h2>
+                    <div>
+                        <input
+                            value={ageValue}
+                            onChange={(e) => setAgeValue(Number(e.target.value))}
+                            min={18}
+                            placeholder={"Возраст"}
+                            type={"number"}
+                            className="border-2 rounded-b w-full"
+                        />
+                    </div>
+                    <div>
+                        <input
+                            value={phoneNumberValue}
+                            type="text"
+                            onChange={(e) => setPhoneNumberValue(e.target.value)}
+                            placeholder={"Номер телефона"}
+                            className="border-2 rounded-b w-full"
+                        />
+                    </div>
+                    <div>
+                        <input
+                            value={universityValue}
+                            onChange={(e) => setUniversityValue(e.target.value)}
+                            type="text"
+                            placeholder={"Учебное заведение"}
+                            className="border-2 rounded-b w-full"
+                        />
+                    </div>
+                    <div>
+                        <input
+                            value={otherContactsDataValue}
+                            onChange={(e) => setOtherContactsDataValue(e.target.value)}
+                            type="text"
+                            placeholder={"Другие контактные данные"}
+                            className="border-2 rounded-b w-full"
+                        />
+                    </div>
+                    <button
+                        onClick={register}
+                        className="rounded-[5px] bg-my-dark text-my-white p-2"
+                    >
+                        Подтвердить
+                    </button>
                 </div>
-                <div>
-                    <input
-                        value={phoneNumberValue}
-                        type="text"
-                        onChange={(e) => setPhoneNumberValue(e.target.value)}
-                        placeholder={"Номер телефона"}
-                    />
-                </div>
-                <div>
-                    <input
-                        value={universityValue}
-                        onChange={(e) => setUniversityValue(e.target.value)}
-                        type="text"
-                        placeholder={"Учебное заведение"}
-                    />
-                </div>
-                <div>
-                    <input
-                        value={otherContactsDataValue}
-                        onChange={(e) => setOtherContactsDataValue(e.target.value)}
-                        type="text"
-                        placeholder={"Другие контактные данные"}
-                    />
-                </div>
-                <button
-                    onClick={register}
-                >
-                    Подтвердить
-                </button>
             </Modal>
         </section>
     )
