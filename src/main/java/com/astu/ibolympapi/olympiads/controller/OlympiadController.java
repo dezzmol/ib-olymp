@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/olymp/")
 @RequiredArgsConstructor
@@ -16,6 +18,11 @@ public class OlympiadController {
     @GetMapping("/{olympiad_id}")
     public ResponseEntity<OlympiadDTO> getOlympiadById(@PathVariable Long olympiad_id) {
         return ResponseEntity.ok(service.getOlympiadDTO(olympiad_id));
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<List<OlympiadDTO>> getAllOlympiads() {
+        return ResponseEntity.ok(service.getAllOlympiadDTO());
     }
 
     @PostMapping("/{olympiad_id}/registration")

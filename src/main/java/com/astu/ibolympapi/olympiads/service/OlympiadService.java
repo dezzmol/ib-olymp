@@ -53,6 +53,10 @@ public class OlympiadService {
         return olympiadMapper.toOlympiadDTO(olympiad);
     }
 
+    public List<OlympiadDTO> getAllOlympiadDTO() {
+        return olympiadMapper.toOlympiadDTOs(olympiadRepo.findAll());
+    }
+
     public Olympiad getOlympiad(Long id) {
         return olympiadRepo.findById(id)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.OLYMPIAD_NOT_FOUND));
