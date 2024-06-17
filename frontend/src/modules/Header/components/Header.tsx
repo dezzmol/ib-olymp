@@ -35,10 +35,18 @@ const Header = () => {
                     </Link>
                 </div>
 
-                {role === "ADMIN" && (
+                {role === "ROLE_ADMIN" && (
                     <Link to="/admin" className="">
                         <b className="text-xl font-normal font-russo text-my-blue">
                             Админ-панель
+                        </b>
+                    </Link>
+                )}
+
+                {role && (role === "ROLE_ADMIN" || role === "ROLE_OLYMPIAD_ADMIN") && (
+                    <Link to="/olympadmin" className="">
+                        <b className="text-xl font-normal font-russo text-my-blue">
+                            Панель управления олимпиадами
                         </b>
                     </Link>
                 )}
