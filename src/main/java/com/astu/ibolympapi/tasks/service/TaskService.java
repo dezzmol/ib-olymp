@@ -1,31 +1,30 @@
 package com.astu.ibolympapi.tasks.service;
 
+import com.astu.ibolympapi.category.entity.Category;
 import com.astu.ibolympapi.category.service.CategoryService;
 import com.astu.ibolympapi.exceptions.BadRequestException;
 import com.astu.ibolympapi.exceptions.enums.ErrorCode;
-import com.astu.ibolympapi.olympiads.entities.Olympiad;
-import com.astu.ibolympapi.olympiads.service.OlympiadService;
-import com.astu.ibolympapi.tasks.dto.CreateAttachmentsDTO;
+import com.astu.ibolympapi.tasks.dto.AttachmentDTO;
 import com.astu.ibolympapi.tasks.dto.CreateTaskDTO;
 import com.astu.ibolympapi.tasks.dto.TaskDTO;
 import com.astu.ibolympapi.tasks.entities.AttachmentForTask;
-import com.astu.ibolympapi.category.entity.Category;
-import com.astu.ibolympapi.tasks.entities.OlympiadTask;
 import com.astu.ibolympapi.tasks.entities.Task;
+import com.astu.ibolympapi.tasks.mapper.AttachmentsMapper;
 import com.astu.ibolympapi.tasks.mapper.TaskMapper;
 import com.astu.ibolympapi.tasks.repository.AttachmentsRepo;
-import com.astu.ibolympapi.tasks.repository.OlympiadTaskRepo;
 import com.astu.ibolympapi.tasks.repository.TaskRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 @Service
 @Transactional
@@ -35,6 +34,7 @@ public class TaskService {
     private final TaskRepo repo;
     private final CategoryService categoryService;
     private final AttachmentsRepo attachmentsRepo;
+    private final AttachmentsMapper attachmentsMapper;
     private final TaskMapper taskMapper;
     @Value("${file.upload-dir}")
     private String fileUploadDir;
@@ -60,16 +60,17 @@ public class TaskService {
         return taskMapper.taskToTaskDTO(getTaskById(id));
     }
 
-    public AttachmentForTask createAttachmentForTask(MultipartFile file, CreateAttachmentsDTO createAttachmentsDTO) {
-        Task task = getTaskById(createAttachmentsDTO.taskId());
+    public AttachmentDTO createAttachmentForTask(MultipartFile file, Long taskId) {
+        System.out.println(file);
+        Task task = getTaskById(taskId);
         String fileName = file.getOriginalFilename();
 
         try {
             if (fileName.contains("..")) {
-                throw new RuntimeException("Filename contains invalid path sequence " + fileName);
+                throw new BadRequestException(HttpStatusCode.valueOf(400), "Filename contains invalid path sequence " + fileName);
             }
 
-            Path taskDir = Path.of(fileUploadDir).resolve("task_" + createAttachmentsDTO.taskId());
+            Path taskDir = Path.of(fileUploadDir).resolve("task_" + taskId);
             if (!Files.exists(taskDir)) {
                 Files.createDirectories(taskDir);
             }
@@ -79,16 +80,19 @@ public class TaskService {
 
             AttachmentForTask attachmentForTask = AttachmentForTask.builder()
                     .task(task)
-                    .name(createAttachmentsDTO.name())
+                    .name(fileName)
                     .pathToFile(targetLocation.toString())
                     .build();
 
-            return attachmentsRepo.save(attachmentForTask);
+            return attachmentsMapper.toAttachmentDTO(attachmentsRepo.save(attachmentForTask));
 
         } catch (IOException e) {
-            throw new BadRequestException(ErrorCode.COUlD_NOT_STORE_FILE);
+            System.out.println(e.getMessage());
+            throw new BadRequestException(HttpStatusCode.valueOf(400), e.getMessage());
         }
     }
 
-
+    public List<TaskDTO> getTasks() {
+        return taskMapper.tasksToTaskDTOs(repo.findAll());
+    }
 }
