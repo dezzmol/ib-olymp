@@ -28,6 +28,7 @@ public enum ErrorCode {
     TEAM_ALREADY_REGISTERED_ON_OLYMPIAD("Team already registered on olympiad", HttpStatusCode.valueOf(400)),
     TOKEN_NOT_FOUND("Token not found", HttpStatusCode.valueOf(404)),
     OLYMPIAD_NOT_FOUND("Olympiad not found", HttpStatusCode.valueOf(404)),
+    REGISTRATION_TIME_HAS_ENDED("Registration time has ended", HttpStatusCode.valueOf(400)),
     CATEGORY_NOT_FOUND("Category not found", HttpStatusCode.valueOf(404)),
     TASK_NOT_FOUND("Task not found", HttpStatusCode.valueOf(404)),
     TASK_IS_NOT_IN_OLYMPIAD("Task is not in olympiad", HttpStatusCode.valueOf(400)),

@@ -26,6 +26,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -77,6 +78,10 @@ public class OlympiadService {
 
     public void registrationOnOlympiad(Long olympiad_id) {
         Olympiad olympiad = getOlympiad(olympiad_id);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        if (localDateTime.isAfter(olympiad.getStartDate())) {
+            throw new BadRequestException(ErrorCode.REGISTRATION_TIME_HAS_ENDED);
+        }
 
         Student student = studentService.getStudentByAuthUser();
 
@@ -84,7 +89,7 @@ public class OlympiadService {
             throw new BadRequestException(ErrorCode.STUDENT_HAS_NOT_TEAM);
         }
 
-        if (student.getIsCaptain()) {
+        if (!student.getIsCaptain()) {
             throw new BadRequestException(ErrorCode.STUDENT_IS_NOT_CAPTAIN);
         }
 
@@ -145,6 +150,8 @@ public class OlympiadService {
         if (olympiadTeams.isPresent()) {
             throw new BadRequestException(ErrorCode.TEAM_ALREADY_REGISTERED_ON_OLYMPIAD);
         }
+
+        olympiadApplicationRepo.delete(olympiadApplication);
 
         OlympiadTeams newOlympiadTeams = OlympiadTeams.builder()
                 .olympiad(olympiad)
