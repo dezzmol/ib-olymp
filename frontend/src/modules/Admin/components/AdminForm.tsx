@@ -52,7 +52,7 @@ const AdminForm = () => {
                 <h2>Банк задач:</h2>
                 <div>
                     {tasks && tasks.map(task => (
-                        <div onClick={() => navigate("/admin/tasks/" + task.id)}>{task.id} {task.title}</div>
+                        <div key={task.id} onClick={() => navigate("/admin/tasks/" + task.id)}>{task.id} {task.title}</div>
                     ))}
                 </div>
             </div>
