@@ -3,8 +3,8 @@ import MainPage from "@/pages/MainPage.tsx"
 import {
     ADMIN_PAGE_ROUTE,
     LOGIN_ROUTE,
-    MAIN_PAGE_ROUTE, OLYMPIAD_ADMIN_ROUTE, OLYMPIAD_ROUTE,
-    PROFILE_ROUTE, TEAM_ROUTE
+    MAIN_PAGE_ROUTE, MY_OLYMPIADS, OLYMPIAD_ADMIN_ROUTE, OLYMPIAD_ROUTE,
+    PROFILE_ROUTE, SOLVE_OLYMPIAD, TEAM_ROUTE
 } from "@/modules/AppRouter/utils/consts.ts"
 import LoginPage from "@/pages/LoginPage.tsx"
 import AdminPage from "@/pages/AdminPage.tsx"
@@ -15,6 +15,8 @@ import TaskPage from "@/pages/TaskPage.tsx"
 import OlympiadIdAdminPage from "@/pages/OlympiadIDAdminPage.tsx"
 import OlympiadsPage from "@/pages/OlympiadsPage.tsx"
 import OlympiadIdPage from "@/pages/OlympiadIdPage.tsx"
+import MyOlympiadsPage from "@/pages/MyOlympiadsPage.tsx"
+import SolveOlympiadPage from "@/pages/SolveOlympiadPage.tsx"
 
 interface IPages {
     path: string
@@ -34,5 +36,7 @@ export const privatePages: IPages[] = [
     { path: TEAM_ROUTE, component: TeamPage },
     { path: OLYMPIAD_ADMIN_ROUTE, component: OlympiadAdminPage },
     { path: OLYMPIAD_ADMIN_ROUTE + "/olympiads/:id", component: OlympiadIdAdminPage },
-    { path: ADMIN_PAGE_ROUTE + "/tasks/:id", component: TaskPage }
+    { path: ADMIN_PAGE_ROUTE + "/tasks/:id", component: TaskPage },
+    { path: MY_OLYMPIADS, component: MyOlympiadsPage },
+    { path: SOLVE_OLYMPIAD + "/:olympiad_id", component: SolveOlympiadPage }
 ]
