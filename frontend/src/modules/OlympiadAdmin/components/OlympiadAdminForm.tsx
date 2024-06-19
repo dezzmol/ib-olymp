@@ -3,8 +3,10 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Modal } from "@/components/Modal"
 import { olympAdminAPI } from "@/modules/OlympiadAdmin/API/olympAdminAPI.ts"
-import DatePicker from "react-datepicker"
+import DatePicker, { registerLocale } from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
+import { ru } from 'date-fns/locale/ru';
+registerLocale('ru', ru)
 
 const OlympiadAdminForm = () => {
     const [modalVisible, setModalVisible] = useState<boolean>(false)
@@ -31,9 +33,6 @@ const OlympiadAdminForm = () => {
     }
 
     const handleSubmitCreating = async () => {
-        startDate.setHours(0, 0, 0, 0)
-        endDate.setHours(0, 0, 0, 0)
-
         if (startDate > endDate) {
             return
         }
@@ -45,6 +44,7 @@ const OlympiadAdminForm = () => {
             endDate: endDate
         })
         await refetchOlympiads()
+        setModalVisible(false)
     }
 
     return (
@@ -86,9 +86,19 @@ const OlympiadAdminForm = () => {
                         onChange={(e) => setUniversity(e.target.value)}
                     />
                     <h2>Дата начала</h2>
-                    <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+                    <DatePicker
+                        selected={startDate}
+                        onChange={(date) => setStartDate(date)}
+                        locale="ru"
+                        showTimeSelect
+                    />
                     <h2>Дата окончания</h2>
-                    <DatePicker selected={endDate} onChange={(date) => setEndDate(date)} />
+                    <DatePicker
+                        selected={endDate}
+                        onChange={(date) => setEndDate(date)}
+                        locale="ru"
+                        showTimeSelect
+                    />
                     <button
                         onClick={handleSubmitCreating}
                         className="rounded-[5px] bg-my-dark text-my-white p-2"

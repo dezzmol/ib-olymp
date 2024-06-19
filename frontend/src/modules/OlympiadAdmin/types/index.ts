@@ -1,4 +1,5 @@
 import { TeamDTO } from "@/modules/Team/types"
+import { ITask } from "@/modules/Admin/types"
 
 export interface CreateOlympiadDTO {
     name: string
@@ -20,4 +21,9 @@ export interface Olympiad {
 export interface OlympiadApplications {
     olympiad: Olympiad,
     teams: TeamDTO[]
+}
+
+export interface IAdminOlympiad extends Olympiad {
+    members: TeamDTO[]
+    tasks: ITask[]
 }
