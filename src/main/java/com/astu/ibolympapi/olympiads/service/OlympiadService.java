@@ -3,6 +3,7 @@ package com.astu.ibolympapi.olympiads.service;
 import com.astu.ibolympapi.exceptions.BadRequestException;
 import com.astu.ibolympapi.exceptions.enums.ErrorCode;
 import com.astu.ibolympapi.olympiads.dto.CreateOlympiadDTO;
+import com.astu.ibolympapi.olympiads.dto.OlympiadAdminDTO;
 import com.astu.ibolympapi.olympiads.dto.OlympiadApplicationsDTO;
 import com.astu.ibolympapi.olympiads.dto.OlympiadDTO;
 import com.astu.ibolympapi.olympiads.entities.Olympiad;
@@ -17,8 +18,10 @@ import com.astu.ibolympapi.student.service.StudentService;
 import com.astu.ibolympapi.tasks.dto.TaskDTO;
 import com.astu.ibolympapi.tasks.entities.OlympiadTask;
 import com.astu.ibolympapi.tasks.entities.Task;
+import com.astu.ibolympapi.tasks.mapper.TaskMapper;
 import com.astu.ibolympapi.tasks.repository.OlympiadTaskRepo;
 import com.astu.ibolympapi.tasks.service.TaskService;
+import com.astu.ibolympapi.team.dto.TeamDTO;
 import com.astu.ibolympapi.team.entity.Team;
 import com.astu.ibolympapi.team.mapper.TeamMapper;
 import com.astu.ibolympapi.team.service.TeamService;
@@ -44,6 +47,7 @@ public class OlympiadService {
     private final OlympiadTeamsRepo olympiadTeamsRepo;
     private final TaskService taskService;
     private final TeamService teamService;
+    private final TaskMapper taskMapper;
 
     public OlympiadDTO createOlympiad(CreateOlympiadDTO newOlympiad) {
         Olympiad olympiad = Olympiad.builder()
@@ -58,6 +62,12 @@ public class OlympiadService {
 
         olympiadRepo.save(olympiad);
         return olympiadMapper.toOlympiadDTO(olympiad);
+    }
+
+    public OlympiadAdminDTO getAdminOlympiad(Long olympiad_id) {
+        Olympiad olympiad = getOlympiad(olympiad_id);
+
+        return olympiadMapper.toOlympiadAdminDTO(olympiad);
     }
 
     public List<OlympiadDTO> getAllOlympiadDTO() {
@@ -116,6 +126,18 @@ public class OlympiadService {
         return new OlympiadApplicationsDTO(olympiadMapper.toOlympiadDTO(olympiad), teamMapper.toTeamDTOs(teams));
     }
 
+    public List<TaskDTO> getOlympiadTasks(Long olympiad_id) {
+        Student student = studentService.getStudentByAuthUser();
+
+        Team team = student.getTeam();
+
+        Olympiad olympiad = getOlympiad(olympiad_id);
+        if (!olympiad.getTeams().contains(team)) {
+            throw new BadRequestException(ErrorCode.TEAM_IS_NOT_PARTICIPANT_OF_OLYMPIAD);
+        }
+        return taskMapper.tasksToTaskDTOs(olympiad.getTasks());
+    }
+
     public TaskDTO getOlympiadTask(Long olympiad_id, Long task_id) {
         Olympiad olympiad = getOlympiad(olympiad_id);
         Task task = taskService.getTaskById(task_id);
@@ -126,9 +148,13 @@ public class OlympiadService {
         return taskService.getTaskDTO(olympiadTask.getTask().getId());
     }
 
-    public void addTaskToOlymp(Long taksId, Long olympId) {
-        Task task = taskService.getTaskById(taksId);
+    public void addTaskToOlymp(Long taskId, Long olympId) {
+        Task task = taskService.getTaskById(taskId);
         Olympiad olympiad = getOlympiad(olympId);
+
+        if (olympiad.getTasks().contains(task)) {
+            throw new BadRequestException(ErrorCode.TASK_IS_ALREADY_IN_OLYMPIAD);
+        }
 
         OlympiadTask olympiadTask = OlympiadTask.builder()
                 .task(task)
@@ -159,5 +185,29 @@ public class OlympiadService {
                 .build();
 
         olympiadTeamsRepo.save(newOlympiadTeams);
+    }
+
+    public List<OlympiadDTO> getMyOlympiads() {
+        Student student = studentService.getStudentByAuthUser();
+        Team team = student.getTeam();
+
+        List<OlympiadTeams> olympiadTeams = olympiadTeamsRepo.findOlympiadTeamsByTeam(team)
+                .orElse(null);
+
+        if (olympiadTeams == null) {
+            return null;
+        }
+        List<OlympiadDTO> olympiadDTOS = new ArrayList<>();
+        for (OlympiadTeams teams : olympiadTeams) {
+            olympiadDTOS.add(olympiadMapper.toOlympiadDTO(teams.getOlympiad()));
+        }
+
+        return olympiadDTOS;
+    }
+
+    public List<TeamDTO> getOlympiadMembers(Long olympiad_id) {
+        Olympiad olympiad = getOlympiad(olympiad_id);
+
+        return teamMapper.toTeamDTOs(olympiad.getTeams());
     }
 }
