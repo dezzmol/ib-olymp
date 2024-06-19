@@ -38,7 +38,7 @@ const TaskForm = () => {
                     <p>Описание: {task.description}</p>
                     <div>
                         {task.attachments && task.attachments.map(attachment => (
-                            <div>
+                            <div key={attachment.id}>
                                 <h2>{attachment.name}</h2>
                                 <div>{attachment.pathToFile}</div>
                             </div>

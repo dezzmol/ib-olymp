@@ -26,7 +26,7 @@ const TeamForm = () => {
                     <div>
                         Участники:
                         {team.students.map(student => (
-                            <div>
+                            <div key={student.id}>
                                 {student.user.surname} {student.user.name} {student.isCaptain && "капитан"}
                             </div>
                             ))
