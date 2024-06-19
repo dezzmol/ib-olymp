@@ -3,6 +3,7 @@ package com.astu.ibolympapi.olympiads.controller;
 import com.astu.ibolympapi.olympiads.dto.OlympiadDTO;
 import com.astu.ibolympapi.olympiads.service.OlympiadService;
 import com.astu.ibolympapi.tasks.dto.TaskDTO;
+import com.astu.ibolympapi.tasks.entities.Task;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +32,18 @@ public class OlympiadController {
         return ResponseEntity.ok("Registration on olympiad successful");
     }
 
+    @GetMapping("/{olympiad_id}/tasks")
+    public ResponseEntity<List<TaskDTO>> getTasksByOlympiad(@PathVariable Long olympiad_id) {
+        return ResponseEntity.ok(service.getOlympiadTasks(olympiad_id));
+    }
+
     @GetMapping("/{olympiad_id}/tasks/{task_id}")
     public ResponseEntity<TaskDTO> getOlympiadTask(@PathVariable Long olympiad_id, @PathVariable Long task_id) {
         return ResponseEntity.ok(service.getOlympiadTask(olympiad_id, task_id));
+    }
+
+    @GetMapping("/myolympiads")
+    public ResponseEntity<List<OlympiadDTO>> getMyOlympiads() {
+        return ResponseEntity.ok(service.getMyOlympiads());
     }
 }

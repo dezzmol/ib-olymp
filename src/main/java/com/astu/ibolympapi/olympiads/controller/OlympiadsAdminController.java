@@ -1,19 +1,28 @@
 package com.astu.ibolympapi.olympiads.controller;
 
 import com.astu.ibolympapi.olympiads.dto.CreateOlympiadDTO;
+import com.astu.ibolympapi.olympiads.dto.OlympiadAdminDTO;
 import com.astu.ibolympapi.olympiads.dto.OlympiadApplicationsDTO;
 import com.astu.ibolympapi.olympiads.dto.OlympiadDTO;
 import com.astu.ibolympapi.olympiads.service.OlympiadService;
 import com.astu.ibolympapi.tasks.dto.AddTaskToOlympDTO;
+import com.astu.ibolympapi.team.dto.TeamDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/olympadmin")
 @RequiredArgsConstructor
 public class OlympiadsAdminController {
     private final OlympiadService service;
+
+    @GetMapping("/{olympiad_id}")
+    public ResponseEntity<OlympiadAdminDTO> getAdminOlympiad(@PathVariable Long olympiad_id) {
+        return ResponseEntity.ok(service.getAdminOlympiad(olympiad_id));
+    }
 
     @PostMapping("/")
     public ResponseEntity<OlympiadDTO> createOlympiad(@RequestBody CreateOlympiadDTO createOlympiadDTO) {
@@ -31,9 +40,14 @@ public class OlympiadsAdminController {
         return ResponseEntity.ok("Team accepted");
     }
 
-    @PostMapping("/addtask")
-    public ResponseEntity<String> addTaskToOlympiad(@RequestBody AddTaskToOlympDTO addTaskToOlympDTO) {
-        service.addTaskToOlymp(addTaskToOlympDTO.taksId(), addTaskToOlympDTO.olympId());
+    @PostMapping("/{olympiad_id}/addtask/{task_id}")
+    public ResponseEntity<String> addTaskToOlympiad(@PathVariable Long olympiad_id, @PathVariable Long task_id) {
+        service.addTaskToOlymp(task_id, olympiad_id);
         return ResponseEntity.ok("Task added to olympiad");
+    }
+
+    @GetMapping("/{olympiad_id}/members")
+    public ResponseEntity<List<TeamDTO>> getOlympiadMembers(@PathVariable Long olympiad_id) {
+        return ResponseEntity.ok(service.getOlympiadMembers(olympiad_id));
     }
 }
