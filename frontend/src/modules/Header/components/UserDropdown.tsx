@@ -26,7 +26,7 @@ const UserDropdown: FC<UserDropDownProps> = ({userName, logout}) => {
                 <button
                     onClick={() => navigate("/team")}
                     type="button"
-
+                    className="mt-2 flex items-center w-full justify-center"
                 >
                     <b className="text-xl font-normal font-russo text-my-white hover:text-my-blue">
                         Моя команда
@@ -34,8 +34,19 @@ const UserDropdown: FC<UserDropDownProps> = ({userName, logout}) => {
                 </button>
 
                 <button
+                    onClick={() => navigate("/myolympiads")}
+                    type="button"
+                    className="mt-2 flex items-center w-full justify-center"
+                >
+                    <b className="text-xl font-normal font-russo text-my-white hover:text-my-blue">
+                        Мои соревнования
+                    </b>
+                </button>
+
+                <button
                     onClick={logout}
                     type="button"
+                    className="mt-2 flex items-center w-full justify-center"
                 >
                     <b className="text-xl font-normal font-russo text-my-white hover:text-my-blue">
                         Выйти
