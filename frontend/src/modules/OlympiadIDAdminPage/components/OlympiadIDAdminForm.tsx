@@ -1,16 +1,43 @@
-import { useParams } from "react-router-dom"
-import { olympIdAdminAPI } from "@/modules/OlympiadIDAdminPage/API/olympIdAdminAPI.ts"
+import {useParams} from "react-router-dom"
+import {olympIdAdminAPI} from "@/modules/OlympiadIDAdminPage/API/olympIdAdminAPI.ts"
+import {Modal} from "@/components/Modal"
+import {useState} from "react"
+import {adminAPI} from "@/modules/Admin/API/adminAPI.ts"
 
 const OlympiadIDAdminForm = () => {
     const { id } = useParams()
     const { data: olympiad } = olympIdAdminAPI.useGetOlympiadAndApplicationsQuery(Number(id!))
     const [acceptTeam] = olympIdAdminAPI.useAcceptTeamMutation()
+    const [modalVisible, setModalVisible] = useState<boolean>(false)
+    const { data: tasks } = adminAPI.useGetAllTasksQuery()
+    const [addTask, { isError }] = olympIdAdminAPI.useAddTaskToOlympiadMutation()
+    const [taskId, setTaskId] = useState<number | null>(null)
+    const { data: olympAdmin } = olympIdAdminAPI.useGetAdminOlympiadQuery(Number(id!))
 
     const handleSubmit = async (team_id: number) => {
         await acceptTeam({
             olympiad_id: Number(id!),
             team_id: team_id
         })
+    }
+
+    const changeModalVisible = () => {
+        setModalVisible((prev) => !prev)
+    }
+
+    const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setTaskId(Number(event.target.value));
+    };
+
+    const addTaskToOlympiad = async () => {
+        console.log(olympiad, taskId)
+        if (olympiad && taskId) {
+            await addTask({
+                olympiad_id: olympiad.olympiad.id,
+                task_id: taskId
+            })
+            setModalVisible(false)
+        }
     }
 
     return (
@@ -21,6 +48,20 @@ const OlympiadIDAdminForm = () => {
                     <p>{olympiad.olympiad.description}</p>
                     <p>Дата начала: {new Date(olympiad.olympiad.startDate).toDateString()}</p>
                     <p>Дата конца: {new Date(olympiad.olympiad.endDate).toDateString()}</p>
+                    <button
+                        className="rounded-[5px] bg-my-dark text-my-white p-2 w-full"
+                        onClick={changeModalVisible}
+                    >
+                        Добавить задачу
+                    </button>
+                    <div>Задачи:</div>
+                    <div className="bg-gray-200 p-2 mt-2 rounded">
+                        {olympAdmin && olympAdmin.tasks.map(task =>
+                            <div>
+                                {task.title}
+                            </div>
+                        )}
+                    </div>
                     <div>Заявления:</div>
                     <div>
                         {olympiad.teams && olympiad.teams.map(team =>
@@ -48,6 +89,25 @@ const OlympiadIDAdminForm = () => {
                     </div>
                 </div>
             }
+            <Modal visible={modalVisible} setVisible={setModalVisible}>
+                <div>
+                    <h2>Добавить задачу</h2>
+                    <select onChange={handleChange}>
+                        <option value="">Выберите задачу</option>
+                        {tasks && tasks.map(task => (
+                            <option key={task.id} value={task.id} >
+                                {task.title}
+                            </option>
+                        ))}
+                    </select>
+                    <button
+                        className="rounded-[5px] bg-my-dark text-my-white p-2 w-full"
+                        onClick={addTaskToOlympiad}
+                    >
+                        Подтвердить
+                    </button>
+                </div>
+            </Modal>
         </section>
     )
 }
