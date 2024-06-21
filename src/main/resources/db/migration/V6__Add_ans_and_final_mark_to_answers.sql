@@ -1,0 +1,3 @@
+ALTER TABLE answers
+    ADD COLUMN ans        VARCHAR(100)   DEFAULT NULL,
+    ADD COLUMN final_mark NUMERIC(10, 2) DEFAULT 0.00;

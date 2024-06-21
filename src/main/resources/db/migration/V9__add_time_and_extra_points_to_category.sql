@@ -1,0 +1,3 @@
+ALTER TABLE categories
+    ADD COLUMN time         TIMESTAMP DEFAULT NULL,
+    ADD COLUMN extra_points INTEGER   DEFAULT 0;

@@ -1,0 +1,7 @@
+ALTER TABLE tasks
+    ADD COLUMN mark         INTEGER DEFAULT 0 NOT NULL,
+    ADD COLUMN right_answer VARCHAR(100) DEFAULT NULL,
+    ADD COLUMN complexity   VARCHAR(100) DEFAULT NULL;
+
+UPDATE tasks
+SET mark = 0;
