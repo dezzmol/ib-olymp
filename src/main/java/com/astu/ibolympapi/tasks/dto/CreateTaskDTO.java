@@ -5,6 +5,11 @@ import java.io.Serializable;
 public record CreateTaskDTO(
         String title,
         String description,
-        Long category_id
+        Long category_id,
+        Boolean isTaskForWhile,
+        Boolean isDetailedAnswer,
+        Integer mark,
+        String rightAnswer,
+        String complexity
 ) implements Serializable {
 }

@@ -10,6 +10,8 @@ public record TaskDTO(
         String description,
         Category category,
         Boolean isOpen,
+        String complexity,
+        Boolean isDetailedAnswer,
         List<AttachmentForTaskDTO> attachments
 ) {
 }

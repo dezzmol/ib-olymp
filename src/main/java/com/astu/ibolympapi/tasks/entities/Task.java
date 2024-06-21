@@ -31,8 +31,20 @@ public class Task {
     @JoinColumn(name = "category_id", nullable = false, foreignKey = @ForeignKey(name = "category_id"))
     private Category category;
 
-    @Column(name = "is_open")
-    private Boolean isOpen = false;
+    @Column(name = "is_task_for_while")
+    private Boolean isTaskForWhile = false;
+
+    @Column(name = "is_detailed_answer")
+    private Boolean isDetailedAnswer = false;
+
+    @Column(name = "mark")
+    private Integer mark;
+
+    @Column(name = "right_answer")
+    private String rightAnswer;
+
+    @Column(name = "complexity")
+    private String complexity;
 
     @ManyToMany(mappedBy = "tasks")
     private List<Olympiad> olympiads;
