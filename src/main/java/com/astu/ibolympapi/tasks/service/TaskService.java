@@ -17,11 +17,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -46,7 +49,11 @@ public class TaskService {
                 .category(category)
                 .title(taskDTO.title())
                 .description(taskDTO.description())
-                .isOpen(false)
+                .isTaskForWhile(taskDTO.isTaskForWhile())
+                .isDetailedAnswer(taskDTO.isDetailedAnswer())
+                .rightAnswer(taskDTO.rightAnswer())
+                .complexity(taskDTO.complexity())
+                .mark(taskDTO.mark())
                 .build();
 
         return taskMapper.taskToTaskDTO(repo.save(task));
@@ -94,5 +101,20 @@ public class TaskService {
 
     public List<TaskDTO> getTasks() {
         return taskMapper.tasksToTaskDTOs(repo.findAll());
+    }
+
+    public Resource getAttachment(Long task_id, String filename) {
+        try {
+            Path file = Path.of(fileUploadDir).resolve("task_" + task_id).resolve(filename);
+            Resource resource = new UrlResource(file.toUri());
+
+            if (resource.exists() || resource.isReadable()) {
+                return resource;
+            } else {
+                throw new BadRequestException(HttpStatusCode.valueOf(400), "Could not read the file!");
+            }
+        } catch (MalformedURLException e) {
+            throw new BadRequestException(HttpStatusCode.valueOf(400), "Error: " + e.getMessage());
+        }
     }
 }
