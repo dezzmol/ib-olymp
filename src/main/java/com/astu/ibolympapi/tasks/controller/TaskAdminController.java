@@ -1,12 +1,12 @@
 package com.astu.ibolympapi.tasks.controller;
 
 import com.astu.ibolympapi.tasks.dto.AttachmentDTO;
-import com.astu.ibolympapi.tasks.dto.CreateAttachmentsDTO;
 import com.astu.ibolympapi.tasks.dto.CreateTaskDTO;
 import com.astu.ibolympapi.tasks.dto.TaskDTO;
-import com.astu.ibolympapi.tasks.entities.AttachmentForTask;
 import com.astu.ibolympapi.tasks.service.TaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,5 +40,16 @@ public class TaskAdminController {
             @RequestParam(value = "file",required = false) MultipartFile file,
             @PathVariable Long taskId) {
         return ResponseEntity.ok(taskService.createAttachmentForTask(file, taskId));
+    }
+
+    @GetMapping("/{task_id}/attachments/{fileName:.+}")
+    public ResponseEntity<Resource> getOlympiadAttachment(@PathVariable Long task_id, @PathVariable String fileName) {
+        Resource resource = taskService.getAttachment( task_id, fileName);
+        String contentType = "application/octet-stream";
+        String headerValue = "attachment; filename=\"" + resource.getFilename() + "\"";
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
+                .body(resource);
     }
 }
