@@ -1,5 +1,5 @@
 import { baseAPI } from "@/API/baseAPI.ts"
-import { ICategory, ICreateTask, ITask } from "@/modules/Admin/types"
+import { ICategory, ICreateCategory, ICreateTask, ITask } from "@/modules/Admin/types"
 
 export const adminAPI = baseAPI.injectEndpoints({
     endpoints: (build) => ({
@@ -20,6 +20,13 @@ export const adminAPI = baseAPI.injectEndpoints({
             query: () => ({
                 url: "/olympadmin/category/",
                 method: "GET"
+            })
+        }),
+        createCategory: build.mutation<ICategory, ICreateCategory>({
+            query: (body) => ({
+                url: "/olympadmin/category/",
+                method: "POST",
+                body
             })
         })
     })
