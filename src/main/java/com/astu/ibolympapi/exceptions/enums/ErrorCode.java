@@ -29,11 +29,15 @@ public enum ErrorCode {
     TEAM_IS_NOT_PARTICIPANT_OF_OLYMPIAD("Team is not participant of this olympiad", HttpStatusCode.valueOf(400)),
     TOKEN_NOT_FOUND("Token not found", HttpStatusCode.valueOf(404)),
     OLYMPIAD_NOT_FOUND("Olympiad not found", HttpStatusCode.valueOf(404)),
+    OLYMPIAD_HAS_ENDED("Olympiad has ended", HttpStatusCode.valueOf(400)),
     REGISTRATION_TIME_HAS_ENDED("Registration time has ended", HttpStatusCode.valueOf(400)),
     CATEGORY_NOT_FOUND("Category not found", HttpStatusCode.valueOf(404)),
     TASK_NOT_FOUND("Task not found", HttpStatusCode.valueOf(404)),
     TASK_IS_NOT_IN_OLYMPIAD("Task is not in olympiad", HttpStatusCode.valueOf(400)),
+    TASK_DOES_NOT_NEED_DETAILED_ANSWER("Task does not need detailed answer", HttpStatusCode.valueOf(400)),
     TASK_IS_ALREADY_IN_OLYMPIAD("Task is already in olympiad", HttpStatusCode.valueOf(400)),
+    ANSWER_IS_ALREADY_ACCEPTED("Answer is already accepted", HttpStatusCode.valueOf(400)),
+    ANSWER_NOT_FOUND("Answer not found", HttpStatusCode.valueOf(404)),
     APPLICATION_IS_NOT_EXIST("Application is not exist", HttpStatusCode.valueOf(404)),
     COUlD_NOT_STORE_FILE("Could Not Store File", HttpStatusCode.valueOf(404));
     private final String message;
