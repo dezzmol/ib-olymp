@@ -24,6 +24,9 @@ public class CategoryService {
         Category categoryEntity = Category.builder()
                 .name(category.name())
                 .description(category.description())
+                .mark(category.mark())
+                .time(category.timeForComplete())
+                .extraPoints(category.extraPoints())
                 .build();
 
         return repo.save(categoryEntity);
