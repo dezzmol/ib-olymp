@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom"
 import { taskAPI } from "@/modules/Task/API/taskAPI.ts"
 import { Modal } from "@/components/Modal"
-import { ChangeEvent, FormEvent, useState } from "react"
+import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 
 const TaskForm = () => {
     const { id } = useParams()
@@ -10,10 +10,36 @@ const TaskForm = () => {
     const [file, setFile] = useState<File | null>(null)
     const [createTaskAttachment] = taskAPI.useCreateAttachmentMutation()
     const [fileName, setFileName] = useState<string>("")
+    const [trigger, { data, isFetching, error }] = taskAPI.useLazyGetAttachmentQuery();
+    const [fileToDownload, setFileToDownload] = useState<string | null>(null);
 
     const changeModalVisible = () => {
         setModalVisible((prev) => !prev)
     }
+
+    useEffect(() => {
+        if (fileToDownload) {
+            trigger({ taskId: Number(id!), fileName: fileToDownload });
+        }
+    }, [fileToDownload, id, trigger]);
+
+    useEffect(() => {
+        if (data && fileToDownload) {
+            const url = URL.createObjectURL(data.data);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = data.fileName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+            setFileToDownload(null);
+        }
+    }, [data, fileToDownload]);
+
+    const handleFileDownload = (fileName: string) => {
+        setFileToDownload(fileName);
+    };
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -30,7 +56,7 @@ const TaskForm = () => {
     }
 
     return (
-        <section>
+        <section className="flex flex-col mt-1 max-w-[600px]">
             {task &&
                 <div>
                     <h2 className="text-2xl">Название задачи: {task.title}</h2>
@@ -40,7 +66,7 @@ const TaskForm = () => {
                         {task.attachments && task.attachments.map(attachment => (
                             <div key={attachment.id}>
                                 <h2>{attachment.name}</h2>
-                                <div>{attachment.pathToFile}</div>
+                                <div onClick={() => handleFileDownload(attachment.name)}>{attachment.pathToFile}</div>
                             </div>
                         ))
                         }

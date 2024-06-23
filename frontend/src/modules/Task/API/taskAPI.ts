@@ -1,5 +1,6 @@
 import { baseAPI } from "@/API/baseAPI.ts"
 import { IAttachmentForTask, ITask } from "@/modules/Admin/types"
+import { AttachmentResponse } from "@/modules/Task/types"
 
 export const taskAPI = baseAPI.injectEndpoints({
     endpoints: (build) => ({
@@ -20,6 +21,12 @@ export const taskAPI = baseAPI.injectEndpoints({
                     body: formData,
                 };
             },
-        })
+        }),
+        getAttachment: build.query<AttachmentResponse, { taskId: number, fileName: string }>({
+            query: ({ taskId, fileName }) => ({
+                url: `/olympadmin/tasks/${taskId}/attachments/${fileName}`,
+                responseHandler: (response) => response.blob().then((data) => ({ data, fileName }))
+            }),
+        }),
     })
 })
