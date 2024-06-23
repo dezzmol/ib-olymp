@@ -22,7 +22,7 @@ const SolveOlympiadForm = () => {
                 </div>
             }
             {tasks && tasks.map(task => (
-                <div key={task.id}>
+                <div key={task.id} onClick={() => navigate("/solve/olympiad/" + olympiad_id! + "/" + task.id)}>
                     <h2>{task.title}</h2>
                 </div>
             ))}
