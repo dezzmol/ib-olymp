@@ -17,6 +17,7 @@ import OlympiadsPage from "@/pages/OlympiadsPage.tsx"
 import OlympiadIdPage from "@/pages/OlympiadIdPage.tsx"
 import MyOlympiadsPage from "@/pages/MyOlympiadsPage.tsx"
 import SolveOlympiadPage from "@/pages/SolveOlympiadPage.tsx"
+import SolveTaskPage from "@/pages/SolveTaskPage.tsx"
 
 interface IPages {
     path: string
@@ -38,5 +39,6 @@ export const privatePages: IPages[] = [
     { path: OLYMPIAD_ADMIN_ROUTE + "/olympiads/:id", component: OlympiadIdAdminPage },
     { path: ADMIN_PAGE_ROUTE + "/tasks/:id", component: TaskPage },
     { path: MY_OLYMPIADS, component: MyOlympiadsPage },
-    { path: SOLVE_OLYMPIAD + "/:olympiad_id", component: SolveOlympiadPage }
+    { path: SOLVE_OLYMPIAD + "/:olympiad_id", component: SolveOlympiadPage },
+    { path: SOLVE_OLYMPIAD + "/:olympiad_id/:task_id", component: SolveTaskPage }
 ]
