@@ -290,7 +290,9 @@ public class OlympiadService {
                     .ans(null)
                     .startTime(localDateTime)
                     .endTime(null)
-                    .filePath(null)
+                    .fileName(null)
+                    .isChecked(false)
+                    .isCreativeSolution(false)
                     .finalMark((double) 0)
                     .olympiad(olympiad)
                     .task(task)
@@ -322,7 +324,7 @@ public class OlympiadService {
         Answer answer = answerRepo.findAnswerByOlympiadAndTaskAndTeam(olympiad, task, team)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.ANSWER_NOT_FOUND));
 
-        if (answer.getFilePath() != null || answer.getEndTime() != null) {
+        if (answer.getFileName() != null || answer.getEndTime() != null) {
             throw new BadRequestException(ErrorCode.ANSWER_IS_ALREADY_ACCEPTED);
         }
 
@@ -353,7 +355,8 @@ public class OlympiadService {
             Path targetLocation = taskSolutions.resolve(newFileName);
             Files.copy(file.getInputStream(), targetLocation);
 
-            answer.setFilePath(targetLocation.toString());
+            Path relativePath = solutions.relativize(targetLocation);
+            answer.setFileName(newFileName);
 
             answerRepo.save(answer);
 
@@ -377,7 +380,7 @@ public class OlympiadService {
             throw new BadRequestException(ErrorCode.TASK_IS_NOT_IN_OLYMPIAD);
         }
 
-        Answer answer = answerRepo.findAnswerByOlympiadTaskAndTeam(new OlympiadTask(olympiad, task), team)
+        Answer answer = answerRepo.findAnswerByOlympiadAndTaskAndTeam(olympiad, task, team)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.ANSWER_NOT_FOUND));
 
         if (answer.getEndTime() != null) {
