@@ -9,8 +9,9 @@ public record AnswerDTO(
         Long id,
         LocalDateTime startTime,
         LocalDateTime endTime,
-        TaskDTO taskDTO,
-        String filePath,
+        TaskDTO task,
+        String fileName,
+        Boolean isChecked,
         String ans
 ) implements Serializable {
 }

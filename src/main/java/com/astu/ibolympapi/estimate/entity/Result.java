@@ -1,14 +1,21 @@
-package com.astu.ibolympapi.olympiads.entities;
+package com.astu.ibolympapi.estimate.entity;
 
+import com.astu.ibolympapi.olympiads.entities.Olympiad;
 import com.astu.ibolympapi.team.entity.Team;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
 
 @Data
 @Entity
 @Table(name = "results")
+@Builder
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class Result {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
