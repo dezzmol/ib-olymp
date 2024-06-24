@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface AnswerRepo extends JpaRepository<Answer, Long> {
     Optional<Answer> findAnswerByOlympiadAndTaskAndTeam(Olympiad olympiad, Task task, Team team);
     Optional<List<Answer>> findAnswerByOlympiad(Olympiad olympiad);
+    Optional<List<Answer>> findAnswerByOlympiadAndTask(Olympiad olympiad, Task task);
 }
