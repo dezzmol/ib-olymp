@@ -39,12 +39,18 @@ public class Answer {
     @Column(name = "end_time")
     private LocalDateTime endTime;
 
-    @Column(name = "file_path")
-    private String filePath;
+    @Column(name = "file_name")
+    private String fileName;
 
     @Column(name = "ans")
     private String ans;
 
     @Column(name = "final_mark")
     private Double finalMark;
+
+    @Column(name = "is_checked")
+    private Boolean isChecked;
+
+    @Column(name = "is_creative_solution")
+    private Boolean isCreativeSolution;
 }
