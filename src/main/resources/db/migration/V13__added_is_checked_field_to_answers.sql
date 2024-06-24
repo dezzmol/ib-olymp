@@ -1,0 +1,2 @@
+ALTER TABLE answers
+    ADD COLUMN is_checked BOOLEAN DEFAULT FALSE;
