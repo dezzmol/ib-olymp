@@ -61,6 +61,7 @@ const Header = () => {
                     <UserDropdown
                         userName={username!}
                         logout={userLogout}
+                        role={role!}
                     />
                 ) : (
                     <Link to="/login">
