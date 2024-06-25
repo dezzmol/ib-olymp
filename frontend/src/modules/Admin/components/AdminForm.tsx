@@ -2,9 +2,10 @@ import { useAppSelector } from "@/hooks/useTypedStore.ts"
 import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { adminAPI } from "@/modules/Admin/API/adminAPI.ts"
-import { Modal } from "@/components/Modal"
 import CategoryForm from "@/modules/Admin/components/CategoryForm.tsx"
 import { complexity } from "@/modules/Admin/types"
+import { Button, Card, Checkbox, Input, Modal, Select } from "antd"
+import TextArea from "antd/es/input/TextArea"
 
 const AdminForm = () => {
     const [taskTitle, setTaskTitle] = useState<string>("")
@@ -70,11 +71,19 @@ const AdminForm = () => {
         setModalVisible(false)
     }
 
+    const handleCancel = () => {
+        setModalVisible(false);
+    };
+
     return (
-        <section className="flex flex-col mt-1">
+        <Card title={<h1 style={{ fontSize: "36px" }}>Админ-панель</h1>} bordered={false}>
             <CategoryForm />
             <div>
-                <button className="rounded-[5px] bg-my-dark text-my-white p-2 w-full" onClick={changeModalVisible}>Загрузка задачи</button>
+                <Button
+                    onClick={changeModalVisible}
+                >
+                    Загрузка задачи
+                </Button>
             </div>
             <div>
                 <h2>Банк задач:</h2>
@@ -84,40 +93,42 @@ const AdminForm = () => {
                     ))}
                 </div>
             </div>
-            <Modal visible={modalVisible} setVisible={setModalVisible}>
-                <div className="flex flex-col gap-2">
+            <Modal
+                open={modalVisible} onCancel={handleCancel} onOk={createTask} cancelText={"Отменить"}
+            >
+                <div style={{display: "flex", flexDirection: "column", gap: "5px"}}>
                     <h2>
                         Добавить новую задачу
                     </h2>
-                    <input
+                    <Input
                         placeholder={"Название задачи"}
                         value={taskTitle}
                         onChange={(e) => setTaskTitle(e.target.value)}
                         className="border-2 rounded"
                     />
-                    <textarea
+                    <TextArea
                         placeholder={"Описание задачи"}
                         value={taskDescription}
                         onChange={(e) => setTaskDescription(e.target.value)}
                         className="border-2 rounded h-20"
                     />
-                    <div className="flex flex-row items-center gap-2">
+                    <div style={{display: "flex", flexDirection: "row", alignItems: "center", gap: "5px"}} >
                         Требуется развернутый ответ:
-                        <input
+                        <Checkbox
                             type="checkbox"
                             checked={isDetailedAnswer}
                             onChange={() => setIsDetailedAnswer(prev => !prev)}
                         />
                     </div>
-                    <div className="flex flex-row items-center gap-2">
+                    <div style={{display: "flex", flexDirection: "row", alignItems: "center", gap: "5px"}}>
                         Задача на время:
-                        <input
+                        <Checkbox
                             type="checkbox"
                             checked={isTaskForWhile}
                             onChange={() => setIsTaskForWhile(prev => !prev)}
                         />
                     </div>
-                    <input
+                    <Input
                         placeholder="Правильный ответ"
                         value={rightAnswer}
                         onChange={(e) => setRightAnswer(e.target.value)}
@@ -126,28 +137,30 @@ const AdminForm = () => {
                     <div>
                         Количество баллов за задание
                     </div>
-                    <input
+                    <Input
                         value={mark}
                         onChange={(e) => setMark(Number(e.target.value))}
                         className="border-2 rounded"
                     />
-                    <select onChange={handleChangeComplexity} className="border-2 rounded">
-                        <option value="Низкая">Низкая</option>
-                        <option value="Средняя">Средняя</option>
-                        <option value="Высокая">Высокая</option>
-                    </select>
-                    <select onChange={handleChange} className="border-2 rounded">
-                        <option value="">Выберите категорию</option>
+                    <div>
+                        Трудоемкость решения
+                    </div>
+                    <Select onChange={handleChangeComplexity}>
+                        <Select.Option value="Низкая">Низкая</Select.Option>
+                        <Select.Option value="Средняя">Средняя</Select.Option>
+                        <Select.Option value="Высокая">Высокая</Select.Option>
+                    </Select>
+                    <Select onChange={handleChange} className="border-2 rounded">
+                        <Select.Option value="">Выберите категорию</Select.Option>
                         {categories && categories.map(category => (
-                            <option key={category.id} value={category.id}>
+                            <Select.Option key={category.id} value={category.id}>
                                 {category.name}
-                            </option>
+                            </Select.Option>
                         ))}
-                    </select>
-                    <button className="rounded-[5px] bg-my-dark text-my-white p-2" onClick={createTask}>Подтвердить</button>
+                    </Select>
                 </div>
             </Modal>
-        </section>
+        </Card>
     )
 }
 

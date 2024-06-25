@@ -1,12 +1,14 @@
 import { useAppSelector } from "@/hooks/useTypedStore.ts"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Modal } from "@/components/Modal"
 import { olympAdminAPI } from "@/modules/OlympiadAdmin/API/olympAdminAPI.ts"
 import DatePicker, { registerLocale } from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
-import { ru } from 'date-fns/locale/ru';
-registerLocale('ru', ru)
+import { ru } from "date-fns/locale/ru"
+import { Button, Card, Input, Modal } from "antd"
+import TextArea from "antd/es/input/TextArea"
+
+registerLocale("ru", ru)
 
 const OlympiadAdminForm = () => {
     const [modalVisible, setModalVisible] = useState<boolean>(false)
@@ -18,7 +20,7 @@ const OlympiadAdminForm = () => {
     const { role } = useAppSelector(state => state.userReducer)
     const navigate = useNavigate()
     const [createOlymp] = olympAdminAPI.useCreateOlympiadMutation()
-    const {data: olympiads, refetch: refetchOlympiads} = olympAdminAPI.useGetOlympiadsQuery()
+    const { data: olympiads, refetch: refetchOlympiads } = olympAdminAPI.useGetOlympiadsQuery()
 
     useEffect(() => {
         if (role === "ROLE_ADMIN" || role === "ROLE_OLYMPIAD_ADMIN") {
@@ -47,40 +49,49 @@ const OlympiadAdminForm = () => {
         setModalVisible(false)
     }
 
+    const handleCancel = () => {
+        setModalVisible(false)
+    }
+
     return (
-        <section className="flex flex-col mt-1">
+        <Card title={<h1 style={{ fontSize: "36px" }}>Управление олимпиадами</h1>} bordered={false}>
             <div>
-                <button
+                <Button
                     className="rounded-[5px] bg-my-dark text-my-white p-2"
                     onClick={changeModalVisible}
                 >Создать олимпиаду
-                </button>
+                </Button>
             </div>
             <h2>Запланированные олимпиады</h2>
             <div>
                 {olympiads && olympiads.map(olympiad => (
-                    <div key={olympiad.id} className="p-2 m-2 bg-gray-200 rounded" onClick={() => navigate("/olympadmin/olympiads/" + olympiad.id)}>
-                        <h2>Название: {olympiad.name}</h2>
+                    <Card
+                        key={olympiad.id}
+                        onClick={() => navigate("/olympadmin/olympiads/" + olympiad.id)}
+                        title={<h2>Название: {olympiad.name}</h2>}
+                        hoverable={true}
+                    >
+                        <p>{olympiad.description}</p>
                         <p>Дата начала: {new Date(olympiad.startDate).toDateString()}</p>
                         <p>Дата конца: {new Date(olympiad.endDate).toDateString()}</p>
-                    </div>
+                    </Card>
                 ))}
             </div>
-            <Modal visible={modalVisible} setVisible={setModalVisible}>
-                <div className="flex flex-col gap-2">
+            <Modal open={modalVisible} onCancel={handleCancel} onOk={handleSubmitCreating} cancelText={"Отменить"}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "5px", justifyContent: "center" }}>
                     <h2>Создание олимпиады</h2>
-                    <input
+                    <Input
                         placeholder={"Название олимпиады"}
                         value={olympiadName}
                         onChange={(e) => setOlympiadName(e.target.value)}
                     />
-                    <textarea
+                    <TextArea
                         className="h-[300px]"
                         placeholder={"Описание олимпиады"}
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                     />
-                    <input
+                    <Input
                         placeholder={"Университет организатор"}
                         value={university}
                         onChange={(e) => setUniversity(e.target.value)}
@@ -99,15 +110,9 @@ const OlympiadAdminForm = () => {
                         locale="ru"
                         showTimeSelect
                     />
-                    <button
-                        onClick={handleSubmitCreating}
-                        className="rounded-[5px] bg-my-dark text-my-white p-2"
-                    >
-                        Подтвердить
-                    </button>
                 </div>
             </Modal>
-        </section>
+        </Card>
     )
 }
 

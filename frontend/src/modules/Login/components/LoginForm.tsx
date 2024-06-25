@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
 import { useSignIn } from "@/modules/Login/hooks/useSignIn.ts"
-import SignInForm from "@/modules/Login/components/SignInForm.tsx"
-import SignUpForm from "@/modules/Login/components/SignUpForm.tsx"
 import { useSignUp } from "@/modules/Login/hooks/useSignUp.ts"
+import { Card, Row } from "antd"
+import Login from "@/modules/Login/components/Login.tsx"
+import Registration from "@/modules/Login/components/Registration.tsx"
 
 const LoginForm = () => {
     const [emailValue, setEmailValue] = useState<string>("")
@@ -15,6 +16,7 @@ const LoginForm = () => {
     const [isLogin, setIsLogin] = useState<boolean>(true)
     const [validationError, setValidationError] = useState<string>("")
     const [errorMessage, setErrorMessage] = useState<string>("")
+    const [haveAcc, setHaveAcc] = useState<boolean>(false)
 
     const validateForm = (): string => {
         let error: string = ""
@@ -47,7 +49,7 @@ const LoginForm = () => {
     const [signIn, isLoginError, loginError, loginReset] = useSignIn(
         validateForm,
         usernameValue,
-        passwordValue,
+        passwordValue
     )
 
     const [signUp, isRegistrationError, IsRegistrationSuccess, registrationError, registrationReset] = useSignUp(
@@ -57,7 +59,7 @@ const LoginForm = () => {
         nameValue,
         surnameValue,
         patronymicValue,
-        passwordValue,
+        passwordValue
     )
 
     const clearInputs = (): void => {
@@ -87,61 +89,58 @@ const LoginForm = () => {
     }, [isRegistrationError, registrationError])
 
     return (
-        <section className="w-605">
-            <form
-                className={`flex flex-col gap-4`}
-                onSubmit={(e: React.FormEvent<HTMLFormElement>) =>
-                    e.preventDefault()
-                }
-            >
-                {isLogin ?
-                    <SignInForm
-                        signIn={signIn}
+        <Card title={haveAcc ? <h1>Войти в аккаунт</h1> : <h1>Зарегистрироваться</h1>}>
+            {haveAcc ?
+                <div style={{
+                    textAlign: "center",
+                    borderRadius: "5px",
+                    background: "#FFFFFF",
+                    padding: "10px 10px",
+                    maxWidth: "800px"
+                }}>
+                    <Login
                         username={usernameValue}
                         setUsername={setUsernameValue}
                         password={passwordValue}
                         setPassword={setPasswordValue}
-                    /> :
-                    <SignUpForm
-                        signUp={signUp}
-                        email={emailValue}
-                        setEmail={setEmailValue}
+                        signIn={signIn}
+                    />
+                    <div onClick={() => setHaveAcc(!haveAcc)}>
+                        Нет аккаунта? Зарегистрируйтесь
+                    </div>
+                </div>
+                :
+                <div style={{
+                    textAlign: "center",
+                    borderRadius: "5px",
+                    background: "#FFFFFF",
+                    padding: "10px 10px",
+                    maxWidth: "800px"
+                }}>
+                    <Registration
                         username={usernameValue}
                         setUsername={setUsernameValue}
-                        name={nameValue}
-                        setName={setNameValue}
+                        email={emailValue}
+                        setEmail={setEmailValue}
                         surname={surnameValue}
                         setSurname={setSurnameValue}
+                        name={nameValue}
+                        setName={setNameValue}
                         patronymic={patronymicValue}
                         setPatronymic={setPatronymicValue}
                         password={passwordValue}
                         setPassword={setPasswordValue}
                         confirmPassword={confirmPasswordValue}
                         setConfirmPassword={setConfirmPasswordValue}
+                        signUp={signUp}
                     />
-                }
-                {isLoginError &&
-                    <div>
-                        <h2>Ошибка при входе</h2>
-                        <p>
-                            {errorMessage}
-                        </p>
+                    <div onClick={() => setHaveAcc(!haveAcc)}>
+                        Уже есть аккаунт? Войти
                     </div>
-                }
-                {isRegistrationError &&
-                    <div>
-                        <h2>Ошибка при регистрации</h2>
-                        <p>
-                            {errorMessage}
-                        </p>
-                    </div>
-                }
-                {isLogin ?
-                    <button onClick={() => handleToggleIsLogin()}>Нет аккаунта? Зарегистрироваться</button> :
-                    <button onClick={() => handleToggleIsLogin()}>Уже есть аккаунт? Войти</button>
-                }
-            </form>
-        </section>
+                </div>
+            }
+
+        </Card>
     )
 }
 

@@ -1,11 +1,10 @@
 import ProfileForm from "@/modules/Profile/components/ProfileForm.tsx"
-import StudentForm from "@/modules/Profile/components/StudentForm.tsx"
+import classes from "@/styles/page.module.css"
 
 const ProfilePage = () => {
     return (
-        <main className="flex flex-col items-center bg-my-white min-h-[91vh]">
+        <main className={classes.page}>
             <ProfileForm />
-            <StudentForm />
         </main>
     )
 }

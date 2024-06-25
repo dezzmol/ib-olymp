@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom"
 import { olympIdAdminAPI } from "@/modules/OlympiadIDAdminPage/API/olympIdAdminAPI.ts"
-import { Modal } from "@/components/Modal"
 import { useState } from "react"
 import { adminAPI } from "@/modules/Admin/API/adminAPI.ts"
+import { Button, Card, Modal, Select } from "antd"
 
 const OlympiadIDAdminForm = () => {
     const { id } = useParams()
@@ -44,11 +44,15 @@ const OlympiadIDAdminForm = () => {
 
     }
 
+    const handleCancel = () => {
+        setModalVisible(false)
+    }
+
     return (
-        <section className="flex flex-col mt-1">
+        <Card title={<h1 style={{ fontSize: "36px" }}>Управление олимпиадами</h1>} bordered={false}>
             {olympiad &&
                 <div>
-                    <h2 className="text-2xl">{olympiad.olympiad.name}</h2>
+                    <h2>{olympiad.olympiad.name}</h2>
                     <p>{olympiad.olympiad.description}</p>
                     <p>Дата начала: {new Date(olympiad.olympiad.startDate).toDateString()}</p>
                     <p>Дата конца: {new Date(olympiad.olympiad.endDate).toDateString()}</p>
@@ -66,12 +70,11 @@ const OlympiadIDAdminForm = () => {
                             )
                         }</div>
                     </div>
-                    <button
-                        className="rounded-[5px] bg-my-dark text-my-white p-2 w-full"
+                    <Button
                         onClick={changeModalVisible}
                     >
                         Добавить задачу
-                    </button>
+                    </Button>
                     <div>Задачи:</div>
                     <div className="bg-gray-200 p-2 mt-2 rounded">
                         {olympAdmin && olympAdmin.tasks.map(task =>
@@ -96,37 +99,29 @@ const OlympiadIDAdminForm = () => {
                                     ))
                                     }
                                 </div>
-                                <button
-                                    className="rounded-[5px] bg-my-dark text-my-white p-2 w-full"
+                                <Button
                                     onClick={() => handleSubmit(team.id)}
                                 >
                                     Подтвердить участие
-                                </button>
+                                </Button>
                             </div>
                         )}
                     </div>
                 </div>
             }
-            <Modal visible={modalVisible} setVisible={setModalVisible}>
-                <div>
+            <Modal open={modalVisible} onCancel={handleCancel} onOk={addTaskToOlympiad} cancelText={"Отменить"}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
                     <h2>Добавить задачу</h2>
-                    <select onChange={handleChange}>
-                        <option value="">Выберите задачу</option>
+                    <Select onChange={handleChange}>
                         {tasks && tasks.map(task => (
-                            <option key={task.id} value={task.id}>
+                            <Select.Option key={task.id} value={task.id}>
                                 {task.title}
-                            </option>
+                            </Select.Option>
                         ))}
-                    </select>
-                    <button
-                        className="rounded-[5px] bg-my-dark text-my-white p-2 w-full"
-                        onClick={addTaskToOlympiad}
-                    >
-                        Подтвердить
-                    </button>
+                    </Select>
                 </div>
             </Modal>
-        </section>
+        </Card>
     )
 }
 

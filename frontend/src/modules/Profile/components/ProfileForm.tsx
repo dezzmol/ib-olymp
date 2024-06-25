@@ -1,6 +1,8 @@
 import { useAppSelector } from "@/hooks/useTypedStore.ts"
 import { useNavigate } from "react-router-dom"
 import { useEffect } from "react"
+import { Card } from "antd"
+import StudentForm from "@/modules/Profile/components/StudentForm.tsx"
 
 const ProfileForm = () => {
     const { isAuth } = useAppSelector((state) => state.authReducer)
@@ -14,23 +16,15 @@ const ProfileForm = () => {
     }, [])
 
     return (
-        <section className="flex gap-0.5 w-[400px] flex-col">
-            <div>
-                Логин: {username}
+        <Card title={<h1 style={{ fontSize: "36px" }}>Профиль</h1>} bordered={false}>
+            <div style={{ fontSize: "26px"}}>
+                {surname} {name} {patronymic}
             </div>
             <div>
-                Имя: {name}
+                {email}
             </div>
-            <div>
-                Фамилия: {surname}
-            </div>
-            <div>
-                Отчество: {patronymic}
-            </div>
-            <div>
-                Электронная почта: {email}
-            </div>
-        </section>
+            <StudentForm />
+        </Card>
     )
 }
 

@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useTypedStore.ts"
 import { useEffect, useState } from "react"
 import { useGetStudentQuery, useRegistrationMutation } from "@/modules/Profile/API/studentAPI.ts"
 import { registerStudent } from "@/store/slice/studentSlice.ts"
-import { Modal } from "@/components/Modal"
+import { Button, Input, Modal } from "antd"
 
 const StudentForm = () => {
     const [ageValue, setAgeValue] = useState<number>(18)
@@ -11,7 +11,7 @@ const StudentForm = () => {
     const [otherContactsDataValue, setOtherContactsDataValue] = useState<string>("")
     const [modalVisible, setModalVisible] = useState<boolean>(false)
     const [registration] = useRegistrationMutation()
-    const {data: student, refetch: refetchStudent, isError} = useGetStudentQuery()
+    const { data: student, refetch: refetchStudent, isError } = useGetStudentQuery()
     const dispatch = useAppDispatch()
 
     const {
@@ -27,7 +27,7 @@ const StudentForm = () => {
             age: ageValue,
             phoneNumber: phoneNumberValue,
             university: universityValue,
-            otherContactsData: otherContactsDataValue,
+            otherContactsData: otherContactsDataValue
         })
 
         const st = await refetchStudent()
@@ -42,7 +42,7 @@ const StudentForm = () => {
                 otherContactsData: st.data!.otherContactsData
             }))
         }
-
+        changeModalVisible(false)
     }
 
     useEffect(() => {
@@ -53,8 +53,12 @@ const StudentForm = () => {
         setModalVisible((prev) => !prev)
     }
 
+    const handleCancel = () => {
+        setModalVisible(false)
+    }
+
     return (
-        <section className="flex gap-0.5 w-[400px] flex-col">
+        <section>
             {student ?
                 <div>
                     <div>
@@ -72,19 +76,18 @@ const StudentForm = () => {
                 </div>
                 :
                 <div>
-                    <button
+                    <Button
                         onClick={changeModalVisible}
-                        className="rounded-[5px] bg-my-dark text-my-white p-2"
                     >
                         Зарегистрировать студента
-                    </button>
+                    </Button>
                 </div>
             }
-            <Modal visible={modalVisible} setVisible={setModalVisible} >
-                <div className="flex flex-col gap-2">
+            <Modal open={modalVisible} onCancel={handleCancel} onOk={register} cancelText={"Отменить"}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
                     <h2>Зарегистрировать студента</h2>
                     <div>
-                        <input
+                        <Input
                             value={ageValue}
                             onChange={(e) => setAgeValue(Number(e.target.value))}
                             min={18}
@@ -94,7 +97,7 @@ const StudentForm = () => {
                         />
                     </div>
                     <div>
-                        <input
+                        <Input
                             value={phoneNumberValue}
                             type="text"
                             onChange={(e) => setPhoneNumberValue(e.target.value)}
@@ -103,7 +106,7 @@ const StudentForm = () => {
                         />
                     </div>
                     <div>
-                        <input
+                        <Input
                             value={universityValue}
                             onChange={(e) => setUniversityValue(e.target.value)}
                             type="text"
@@ -112,7 +115,7 @@ const StudentForm = () => {
                         />
                     </div>
                     <div>
-                        <input
+                        <Input
                             value={otherContactsDataValue}
                             onChange={(e) => setOtherContactsDataValue(e.target.value)}
                             type="text"
@@ -120,12 +123,6 @@ const StudentForm = () => {
                             className="border-2 rounded-b w-full"
                         />
                     </div>
-                    <button
-                        onClick={register}
-                        className="rounded-[5px] bg-my-dark text-my-white p-2"
-                    >
-                        Подтвердить
-                    </button>
                 </div>
             </Modal>
         </section>

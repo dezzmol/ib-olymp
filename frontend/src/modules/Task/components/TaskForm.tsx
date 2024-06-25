@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom"
 import { taskAPI } from "@/modules/Task/API/taskAPI.ts"
-import { Modal } from "@/components/Modal"
 import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { Button, Card, Input, Modal } from "antd"
 
 const TaskForm = () => {
     const { id } = useParams()
@@ -10,8 +10,8 @@ const TaskForm = () => {
     const [file, setFile] = useState<File | null>(null)
     const [createTaskAttachment] = taskAPI.useCreateAttachmentMutation()
     const [fileName, setFileName] = useState<string>("")
-    const [trigger, { data, isFetching, error }] = taskAPI.useLazyGetAttachmentQuery();
-    const [fileToDownload, setFileToDownload] = useState<string | null>(null);
+    const [trigger, { data, isFetching, error }] = taskAPI.useLazyGetAttachmentQuery()
+    const [fileToDownload, setFileToDownload] = useState<string | null>(null)
 
     const changeModalVisible = () => {
         setModalVisible((prev) => !prev)
@@ -19,27 +19,27 @@ const TaskForm = () => {
 
     useEffect(() => {
         if (fileToDownload) {
-            trigger({ taskId: Number(id!), fileName: fileToDownload });
+            trigger({ taskId: Number(id!), fileName: fileToDownload })
         }
-    }, [fileToDownload, id, trigger]);
+    }, [fileToDownload, id, trigger])
 
     useEffect(() => {
         if (data && fileToDownload) {
-            const url = URL.createObjectURL(data.data);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = data.fileName;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            URL.revokeObjectURL(url);
-            setFileToDownload(null);
+            const url = URL.createObjectURL(data.data)
+            const a = document.createElement("a")
+            a.href = url
+            a.download = data.fileName
+            document.body.appendChild(a)
+            a.click()
+            a.remove()
+            URL.revokeObjectURL(url)
+            setFileToDownload(null)
         }
-    }, [data, fileToDownload]);
+    }, [data, fileToDownload])
 
     const handleFileDownload = (fileName: string) => {
-        setFileToDownload(fileName);
-    };
+        setFileToDownload(fileName)
+    }
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -55,11 +55,15 @@ const TaskForm = () => {
         }
     }
 
+    const handleCancel = () => {
+        setModalVisible(false)
+    }
+
     return (
-        <section className="flex flex-col mt-1 max-w-[600px]">
+        <Card title={<h1 style={{ fontSize: "36px" }}>Задача</h1>} bordered={false}>
             {task &&
                 <div>
-                    <h2 className="text-2xl">Название задачи: {task.title}</h2>
+                    <h1>Название задачи: {task.title}</h1>
                     <b>Категория: {task.category.name}</b>
                     <p>Описание: {task.description}</p>
                     <div>
@@ -71,32 +75,25 @@ const TaskForm = () => {
                         ))
                         }
                     </div>
-                    <button
+                    <Button
                         onClick={changeModalVisible}
-                        className="rounded-[5px] bg-my-dark text-my-white p-2"
                     >
                         Добавить приложение к задаче
-                    </button>
+                    </Button>
                 </div>
             }
-            <Modal visible={modalVisible} setVisible={setModalVisible}>
-                <div className="flex flex-col gap-5">
+            <Modal open={modalVisible} onCancel={handleCancel} onOk={handleSubmit} cancelText={"Отменить"}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
                     <h2>Добавить приложение</h2>
-                    <input
+                    <Input
                         type="text" placeholder="Название приложения"
                         value={fileName}
                         onChange={(e) => setFileName(e.target.value)}
                     />
-                    <input type="file" onChange={handleFileChange} />
-                    <button
-                        onClick={handleSubmit}
-                        className="rounded-[5px] bg-my-dark text-my-white p-2"
-                    >
-                        Подтвердить
-                    </button>
+                    <Input type="file" onChange={handleFileChange} />
                 </div>
             </Modal>
-        </section>
+        </Card>
     )
 }
 

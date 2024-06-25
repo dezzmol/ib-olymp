@@ -1,8 +1,9 @@
 import { TaskForm } from "@/modules/Task"
+import classes from "@/styles/page.module.css"
 
 const TaskPage = () => {
     return (
-        <main className="flex flex-col items-center min-h-[91vh] bg-my-white">
+        <main className={classes.page}>
             <TaskForm />
         </main>
     )

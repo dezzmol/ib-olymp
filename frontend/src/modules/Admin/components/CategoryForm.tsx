@@ -1,6 +1,7 @@
 import { adminAPI } from "@/modules/Admin/API/adminAPI.ts"
-import { Modal } from "@/components/Modal"
 import { useState } from "react"
+import { Button, Input, Modal } from "antd"
+import TextArea from "antd/es/input/TextArea"
 
 const CategoryForm = () => {
     const [createCategory] = adminAPI.useCreateCategoryMutation()
@@ -19,32 +20,36 @@ const CategoryForm = () => {
         await createCategory({
             name: categoryName,
             description: categoryDesc,
-            mark: categoryMark
+            mark: categoryMark,
+            time: categoryTime,
+            extraPoints: categoryExtraPoints
         })
         setModalVisible(false)
     }
 
+    const handleCancel = () => {
+        setModalVisible(false);
+    };
+
     return (
         <div>
-            <button
-                className="rounded-[5px] bg-my-dark text-my-white p-2 w-full mb-2"
+            <Button
                 onClick={changeModalVisible}
             >
                 Создать категорию
-            </button>
+            </Button>
             <Modal
-                visible={modalVisible}
-                setVisible={setModalVisible}
+                open={modalVisible} onCancel={handleCancel} onOk={upload} cancelText={"Отменить"}
             >
-                <div className="flex flex-col gap-2">
-                    <h2 className="text-2xl">Создание категории</h2>
-                    <input
+                <div style={{display: "flex", flexDirection: "column", gap: "5px"}}>
+                    <h2>Создание категории</h2>
+                    <Input
                         placeholder="Название категории"
                         value={categoryName}
                         onChange={(e) => setCategoryName(e.target.value)}
                         className="border-2 rounded"
                     />
-                    <textarea
+                    <TextArea
                         placeholder="Описание категории"
                         value={categoryDesc}
                         onChange={(e) => setCategoryDesc(e.target.value)}
@@ -53,7 +58,7 @@ const CategoryForm = () => {
                     <div>
                         Балл за раздел
                     </div>
-                    <input
+                    <Input
                         value={categoryMark}
                         type="number"
                         onChange={(e) => setCategoryMark(Number(e.target.value))}
@@ -62,7 +67,7 @@ const CategoryForm = () => {
                     <div>
                         Время выполнения задачи из этого раздела
                     </div>
-                    <input
+                    <Input
                         value={categoryTime}
                         type="number"
                         onChange={(e) => setCategoryTime(Number(e.target.value))}
@@ -71,18 +76,12 @@ const CategoryForm = () => {
                     <div>
                         Доп баллы за выполнения задачи за определенное время
                     </div>
-                    <input
+                    <Input
                         value={categoryExtraPoints}
                         type="number"
                         onChange={(e) => setCategoryExtraPoints(Number(e.target.value))}
                         className="border-2 rounded"
                     />
-                    <button
-                        className="rounded-[5px] bg-my-dark text-my-white p-2 w-full mb-2"
-                        onClick={upload}
-                    >
-                        Подтвердить
-                    </button>
                 </div>
             </Modal>
         </div>

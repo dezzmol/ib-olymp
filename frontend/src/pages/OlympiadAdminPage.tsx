@@ -1,8 +1,9 @@
 import OlympiadAdminForm from "@/modules/OlympiadAdmin/components/OlympiadAdminForm.tsx"
+import classes from "@/styles/page.module.css"
 
 const OlympiadAdminPage = () => {
     return (
-        <main className="flex flex-col items-center min-h-[91vh] bg-my-white">
+        <main className={classes.page}>
             <OlympiadAdminForm />
         </main>
     )

@@ -1,11 +1,12 @@
 import { BrowserRouter } from "react-router-dom"
 import AppRouter from "@/modules/AppRouter"
-import Header from "@/modules/Header"
+import GlobalLayout from "@/modules/Header"
 import { useEffect } from "react"
 import { setUser } from "@/store/slice/userSlice.ts"
 import { useGetUserMutation } from "@/modules/Profile/API/userAPI.ts"
 import { useAppDispatch } from "@/hooks/useTypedStore.ts"
 import { login, logout } from "@/store/slice/authSlice.ts"
+import { ConfigProvider } from "antd"
 
 const App = () => {
     const [getData] = useGetUserMutation()
@@ -38,10 +39,21 @@ const App = () => {
     }, [])
 
     return (
-        <BrowserRouter>
-            <Header />
-            <AppRouter />
-        </BrowserRouter>
+        <ConfigProvider
+            theme={{
+                token: {
+                    colorPrimary: "#303461",
+                    colorInfo: "#73debb",
+                    fontSize: 16
+                }
+            }}
+        >
+            <BrowserRouter>
+                <GlobalLayout>
+                    <AppRouter />
+                </GlobalLayout>
+            </BrowserRouter>
+        </ConfigProvider>
     )
 }
 

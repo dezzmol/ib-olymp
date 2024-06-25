@@ -1,3 +1,3 @@
-import Header from "@/modules/Header/components/Header.tsx"
+import GlobalLayout from "@/modules/Header/components/GlobalLayout.tsx"
 
-export default Header
+export default GlobalLayout
