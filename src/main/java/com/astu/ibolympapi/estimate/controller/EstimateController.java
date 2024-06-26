@@ -3,6 +3,7 @@ package com.astu.ibolympapi.estimate.controller;
 import com.astu.ibolympapi.estimate.dto.AnswerDTO;
 import com.astu.ibolympapi.estimate.dto.RateSolutionDTO;
 import com.astu.ibolympapi.estimate.service.EstimateService;
+import com.astu.ibolympapi.tasks.dto.TaskDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +22,16 @@ public class EstimateController {
     @GetMapping("/olymp/{olymp_id}/solutions")
     public ResponseEntity<List<AnswerDTO>> getSolutions(@PathVariable Long olymp_id) {
         return ResponseEntity.ok(service.getAnswers(olymp_id));
+    }
+
+    @GetMapping("/olymp/{olymp_id}/tasks")
+    public ResponseEntity<List<TaskDTO>> getOlympiadTasks(@PathVariable Long olymp_id) {
+        return ResponseEntity.ok(service.getOlympiadTasks(olymp_id));
+    }
+
+    @GetMapping("/olymp/{olymp_id}/tasks/{task_id}")
+    public ResponseEntity<TaskDTO> getOlympiadTask(@PathVariable Long olymp_id, @PathVariable Long task_id) {
+        return ResponseEntity.ok(service.getTask(olymp_id, task_id));
     }
 
     @GetMapping("/olymp/{olymp_id}/solutions/{task_id}")
@@ -43,11 +54,5 @@ public class EstimateController {
     public ResponseEntity<String> rateSolution(@PathVariable Long olymp_id, @PathVariable Long solution_id, @RequestBody RateSolutionDTO rateSolutionDTO) {
         service.rateSolution(olymp_id, solution_id, rateSolutionDTO);
         return ResponseEntity.ok("Solution rated");
-    }
-
-    @PostMapping("/olymp/{olymp_id}")
-    public ResponseEntity<String> summarize(@PathVariable Long olymp_id) {
-        service.summarize(olymp_id);
-        return ResponseEntity.ok("123");
     }
 }

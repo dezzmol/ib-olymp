@@ -2,7 +2,6 @@ package com.astu.ibolympapi.estimate.service;
 
 import com.astu.ibolympapi.estimate.dto.AnswerDTO;
 import com.astu.ibolympapi.estimate.dto.RateSolutionDTO;
-import com.astu.ibolympapi.estimate.entity.Result;
 import com.astu.ibolympapi.estimate.repository.ResultRepo;
 import com.astu.ibolympapi.exceptions.BadRequestException;
 import com.astu.ibolympapi.exceptions.enums.ErrorCode;
@@ -11,11 +10,10 @@ import com.astu.ibolympapi.olympiads.entities.Olympiad;
 import com.astu.ibolympapi.olympiads.mapper.AnswerMapper;
 import com.astu.ibolympapi.olympiads.repositories.AnswerRepo;
 import com.astu.ibolympapi.olympiads.service.OlympiadService;
-import com.astu.ibolympapi.student.entity.Student;
-import com.astu.ibolympapi.student.service.StudentService;
+import com.astu.ibolympapi.tasks.dto.TaskDTO;
 import com.astu.ibolympapi.tasks.entities.Task;
+import com.astu.ibolympapi.tasks.mapper.TaskMapper;
 import com.astu.ibolympapi.tasks.service.TaskService;
-import com.astu.ibolympapi.team.entity.Team;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,13 +22,9 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
-import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional
@@ -40,6 +34,7 @@ public class EstimateService {
     private final AnswerRepo answerRepo;
     private final AnswerMapper answerMapper;
     private final TaskService taskService;
+    private final TaskMapper taskMapper;
     private final ResultRepo resultRepo;
     @Value("${file.upload-dir}")
     private String fileUploadDir;
@@ -92,77 +87,15 @@ public class EstimateService {
         answerRepo.save(answer);
     }
 
-    public void summarize(Long olymp_id) {
+    public List<TaskDTO> getOlympiadTasks(Long olymp_id) {
         Olympiad olympiad = olympiadService.getOlympiad(olymp_id);
 
-        List<Answer> answers = answerRepo.findAnswerByOlympiad(olympiad)
-                .orElseThrow(() -> new BadRequestException(ErrorCode.ANSWER_NOT_FOUND));
-
-        setFinalMarkForAnswers(answers, olympiad);
-        List<Result> results = setResults(answers, olympiad);
-
-
+        return taskMapper.tasksToTaskDTOs(olympiad.getTasks());
     }
 
-    private void setFinalMarkForAnswers(List<Answer> answers, Olympiad olympiad) {
-        int N = olympiad.getTeams().size();
-        for (Task task : olympiad.getTasks()) {
-            int Ns = 0;
-            for (Answer answer : answers) {
-                if (answer.getTask() == task) {
-                    if (Objects.equals(answer.getAns(), task.getRightAnswer())) {
-                        Ns++;
-                    }
-                }
-            }
+    public TaskDTO getTask(Long olymp_id, Long task_id) {
+        Olympiad olympiad = olympiadService.getOlympiad(olymp_id);
 
-            double q = task.getMark() + task.getCategory().getMark();
-            double B = q / (1 + (double) Ns / N);
-
-            for (Answer answer : answers) {
-                if (answer.getTask() == task) {
-                    answer.setFinalMark(B);
-                }
-            }
-        }
-    }
-
-    private List<Result> setResults(List<Answer> answers, Olympiad olympiad) {
-        List<Result> results = new ArrayList<>(olympiad.getTeams().size());
-
-        for (Team team : olympiad.getTeams()) {
-            double score = 0;
-            for (Answer answer : answers) {
-                if (team == answer.getTeam()) {
-                    if (Objects.equals(answer.getAns(), answer.getTask().getRightAnswer())) {
-                        score += answer.getFinalMark();
-
-                        if (answer.getIsCreativeSolution()) {
-
-                        }
-
-                        Duration duration = Duration.between(answer.getStartTime(), answer.getEndTime());
-                        long minutes = duration.toMinutes();
-
-                        if (minutes < answer.getTask().getCategory().getTime()) {
-                            score += answer.getTask().getCategory().getExtraPoints();
-                        }
-
-                    }
-
-                }
-            }
-
-            Result result = Result.builder()
-                    .team(team)
-                    .resultScore(BigDecimal.valueOf(score))
-                    .olympiad(olympiad)
-                    .build();
-
-            results.add(result);
-        }
-
-        resultRepo.saveAll(results);
-        return results;
+        return taskService.getTaskDTO(task_id);
     }
 }
