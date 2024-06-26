@@ -1,4 +1,5 @@
 import { baseAPI } from "@/API/baseAPI.ts"
+import { ITask } from "@/modules/Admin/types"
 import { AnswerDTO, RateSolutionDTO } from "@/modules/Estimate/types"
 import { AttachmentResponse } from "@/modules/Task/types"
 
@@ -9,7 +10,19 @@ export const estimateAPI = baseAPI.injectEndpoints({
                 url: `/estimate/olymp/${id}/solutions`,
                 method: "GET"
             }),
-            providesTags: result => ["answers"]
+            providesTags: result => ["all_task_answers"]
+        }),
+        getOlympiadTasksToEstimate: build.query<ITask[], number>({
+            query: (id) => ({
+                url: `/estimate/olymp/${id}/tasks`,
+                method: "GET"
+            })
+        }),
+        getOlympiadTaskToEstimate: build.query<ITask, { olympiad_id: number, task_id: number }>({
+            query: ({olympiad_id, task_id}) => ({
+                url: `/estimate/olymp/${olympiad_id}/tasks/${task_id}`,
+                method: "GET"
+            })
         }),
         getTaskAnswers: build.query<AnswerDTO[], { olympiad_id: number, task_id: number }>({
             query: ({ olympiad_id, task_id }) => ({
@@ -35,7 +48,7 @@ export const estimateAPI = baseAPI.injectEndpoints({
                 method: "POST",
                 body: rateSolutionDTO
             }),
-            invalidatesTags: ["solutions"]
+            invalidatesTags: ["task_answers"]
         })
     })
 })

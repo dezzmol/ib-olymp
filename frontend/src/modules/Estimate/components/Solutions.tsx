@@ -1,9 +1,9 @@
-import React, { FC, useEffect, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { estimateAPI } from "@/modules/Estimate/API/estimateAPI.ts"
 import { useParams } from "react-router-dom"
 import { ITask } from "@/modules/Admin/types"
-import { Modal } from "@/components/Modal"
 import { AnswerDTO } from "@/modules/Estimate/types"
+import { Button, Card, Checkbox, Modal } from "antd"
 
 interface Props {
     task: ITask | undefined
@@ -51,34 +51,41 @@ const Solutions: FC<Props> = ({ task }) => {
         setChosenAnswer(answer)
     }
 
-    const handleSubmitSolution = async (solution_id: number) => {
-        await rateSolution({
-            olympiad_id: Number(id!),
-            solution_id: solution_id,
-            rateSolutionDTO: {
-                isCreativeSolution: isCreativeSolution
-            }
-        })
+    const handleSubmitSolution = async () => {
+        if (chosenAnswer) {
+            const solution_id = chosenAnswer.id
+            await rateSolution({
+                olympiad_id: Number(id!),
+                solution_id: solution_id,
+                rateSolutionDTO: {
+                    isCreativeSolution: isCreativeSolution
+                }
+            })
+            setModalVisible(false)
+        }
     }
 
+    const handleCancel = () => {
+        setModalVisible(false);
+    };
+
     return (
-        <div>
+        <Card>
             <div className="mt-5">Ответы:</div>
             {answers && answers.map(answer => (
-                <div className="bg-gray-200 p-2 mt-2" key={answer.id}>
+                <div key={answer.id}>
                     <h2>{answer.id} Ответ: {answer.ans}</h2>
                     <p onClick={() => handleFileDownload(answer.fileName)}>{answer.fileName}</p>
                     {!answer.isChecked &&
-                        <button
-                            className="rounded-[5px] bg-my-dark text-my-white p-2 w-full"
+                        <Button
                             onClick={() => changeModalVisible(answer)}
                         >
                             Оценить решение
-                        </button>
+                        </Button>
                     }
                 </div>
             ))}
-            <Modal visible={modalVisible} setVisible={setModalVisible}>
+            <Modal open={modalVisible} onCancel={handleCancel} onOk={handleSubmitSolution} cancelText={"Отменить"}>
                 <div>
                     <h2 className="text-2xl">Оценка решения</h2>
                     <p>Ответ: {chosenAnswer?.ans}</p>
@@ -86,24 +93,17 @@ const Solutions: FC<Props> = ({ task }) => {
                         <div className="flex flex-col  gap-2">
                             <div className="flex-row flex gap-2">
                                 Решение является креативным:
-                                <input
+                                <Checkbox
                                     type={"checkbox"}
                                     checked={isCreativeSolution}
                                     onChange={() => setIsCreativeSolution(prevState => !prevState)}
                                 />
                             </div>
-                            <button
-                                className="rounded-[5px] bg-my-dark text-my-white p-2 w-full"
-                                onClick={() => handleSubmitSolution(chosenAnswer!.id)}
-                            >
-                                Подтвердить
-                            </button>
                         </div>
                     }
-
                 </div>
             </Modal>
-        </div>
+        </Card>
     )
 }
 

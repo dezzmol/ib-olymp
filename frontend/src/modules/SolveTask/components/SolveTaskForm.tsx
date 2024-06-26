@@ -1,8 +1,8 @@
 import { solveTaskAPI } from "@/modules/SolveTask/API/solveTaskAPI.ts"
 import { useParams } from "react-router-dom"
 import { ChangeEvent, useEffect, useState } from "react"
-import { Modal } from "@/components/Modal"
 import { SolutionDTO } from "@/modules/Task/types"
+import { Button, Card, Input, Modal } from "antd"
 
 const SolveTaskForm = () => {
     const [trigger, { data, isFetching, error }] = solveTaskAPI.useLazyGetAttachmentQuery()
@@ -78,11 +78,15 @@ const SolveTaskForm = () => {
         setModalVisible((prev) => !prev)
     }
 
+    const handleCancel = () => {
+        setModalVisible(false)
+    }
+
+
     return (
         <section>
             {isOpened && !isOpened.isTaskOpen ?
-                <div>
-                    <h2 className="text-2xl">Данная задача является задачей на время</h2>
+                <Card title={<h1>Данная задача является задачей на время</h1>}>
                     <p>Для того, чтобы приступить к выполнению данной задачи нажмите кнопку внизу. </p>
                     <p>После нажатия кнопки будет зафиксировано время начала выполнения задачи. </p>
                     <p>Оно будет учитываться при подсчете итогового балла</p>
@@ -92,12 +96,11 @@ const SolveTaskForm = () => {
                     >
                         Приступить к выполнению
                     </button>
-                </div>
+                </Card>
                 :
                 <div>
                     {task &&
-                        <div className="max-w-[600px]">
-                            <h2 className="text-2xl">Название задачи: {task.title}</h2>
+                        <Card title={<h1>Название задачи: {task.title}</h1>}>
                             <b>Категория: {task.category.name}</b>
                             <p>Описание: {task.description}</p>
                             <div>
@@ -115,25 +118,26 @@ const SolveTaskForm = () => {
                                     Решение загружено
                                 </p>
                                 :
-                                <button
+                                <Button
                                     onClick={changeModalVisible}
-                                    className="rounded-[5px] bg-my-dark text-my-white p-2 w-full"
                                 >
                                     Внести решение
-                                </button>
+                                </Button>
                             }
 
-                        </div>
+                        </Card>
                     }
                 </div>
             }
-            <Modal visible={modalVisible} setVisible={setModalVisible}>
-                <div className="flex flex-col gap-2">
+            <Modal
+                open={modalVisible} onCancel={handleCancel} onOk={handleUploadSolution} cancelText={"Отменить"}
+            >
+                <div className="flex flex-col gap-2" style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
                     <h2 className="text-2xl">Ваше решение</h2>
                     {task && task.isDetailedAnswer &&
-                        <input type="file" onChange={handleFileChange} />
+                        <Input type="file" onChange={handleFileChange} />
                     }
-                    <input
+                    <Input
                         placeholder="Ответ"
                         value={answer}
                         onChange={(e) => setAnswer(e.target.value)}
@@ -142,12 +146,6 @@ const SolveTaskForm = () => {
                     <p>
                         После загрузки ответа нельзя его поменять
                     </p>
-                    <button
-                        className="rounded-[5px] bg-my-dark text-my-white p-2"
-                        onClick={handleUploadSolution}
-                    >
-                        Загрузить решение
-                    </button>
                 </div>
             </Modal>
         </section>

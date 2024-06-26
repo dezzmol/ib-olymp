@@ -1,21 +1,30 @@
 import { useNavigate, useParams } from "react-router-dom"
 import { myOlympiadsAPI } from "@/modules/MyOlympiads/API/myOlympiadsAPI.ts"
+import { Card, List } from "antd"
+import { estimateAPI } from "@/modules/Estimate/API/estimateAPI.ts"
 
 const EstimateOlympiadIdForm = () => {
     const { id } = useParams()
-    const { data: tasks } = myOlympiadsAPI.useGetTasksByOlympiadQuery(Number(id!))
+    const { data: tasks } = estimateAPI.useGetOlympiadTasksToEstimateQuery(Number(id!))
     const navigate = useNavigate()
 
     return (
-        <section className="mt-2">
-            {tasks && tasks.map(task => (
-                <div key={task.id} className="bg-gray-200 p-2" onClick={() => navigate(`/estimate/olympiads/${id}/${task.id}`)}>
-                    <div>{task.title} </div>
-                    <p>{task.category.name}</p>
-                    <p>Сложность: {task.complexity}</p>
-                </div>
-            ))}
-        </section>
+        <Card title={<h1>Оценивание задач</h1>}>
+            {tasks &&
+                <List
+                    bordered
+                    dataSource={tasks}
+                    renderItem={(task) => (
+                        <List.Item onClick={() => navigate(`/estimate/olympiads/${id}/${task.id}`)}>
+                            <List.Item.Meta
+                                title={<h3>{task.title}</h3>}
+                                description={"Сложность: " + task.complexity}
+                            />
+                        </List.Item>
+                    )}
+                />
+            }
+        </Card>
     )
 }
 
