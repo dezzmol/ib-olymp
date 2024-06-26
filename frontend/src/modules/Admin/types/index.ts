@@ -3,7 +3,7 @@ export interface ITask {
     title: string
     description: string
     category: ICategory
-    isOpen: boolean
+    isTaskForWhile: boolean
     complexity: string
     isDetailedAnswer: boolean
     attachments: IAttachmentForTask[]
