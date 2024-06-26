@@ -1,6 +1,7 @@
 package com.astu.ibolympapi.team.controller;
 
 import com.astu.ibolympapi.student.dto.CreateTeamDTO;
+import com.astu.ibolympapi.team.dto.InviteLinkDTO;
 import com.astu.ibolympapi.team.dto.TeamDTO;
 import com.astu.ibolympapi.team.service.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class TeamController {
     }
 
     @PostMapping("/generateLink")
-    public ResponseEntity<String> inviteToTheTeam() {
+    public ResponseEntity<InviteLinkDTO> inviteToTheTeam() {
         return ResponseEntity.ok(service.generateInviteLink());
     }
 
