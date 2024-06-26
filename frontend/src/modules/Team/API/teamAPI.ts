@@ -33,6 +33,12 @@ export const teamAPI = baseAPI.injectEndpoints({
                 url: "/student/team/" + id,
                 method: "DELETE"
             })
+        }),
+        joinTeam: build.query<string, string>({
+            query: (token) => ({
+                url: "/student/joinTeam/" + token,
+                method: "GET"
+            })
         })
     })
 })
