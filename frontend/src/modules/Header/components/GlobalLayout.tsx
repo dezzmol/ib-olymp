@@ -50,7 +50,7 @@ const GlobalLayout: FC<IProps> = ({ children }) => {
                     <Menu.Item
                         onClick={() => navigate("/olympiads")}
                     >
-                        Олимпиады
+                        Соревнования
                     </Menu.Item>
 
                     {role === "ROLE_ADMIN" && (
@@ -66,7 +66,7 @@ const GlobalLayout: FC<IProps> = ({ children }) => {
                         <Menu.Item
                             onClick={() => navigate("/olympadmin")}
                         >
-                            Управление олимпиадами
+                            Управление соревнованиями
 
                         </Menu.Item>
                     )}

@@ -54,40 +54,40 @@ const OlympiadAdminForm = () => {
     }
 
     return (
-        <Card title={<h1 style={{ fontSize: "36px" }}>Управление олимпиадами</h1>} bordered={false}>
+        <Card title={<h1 style={{ fontSize: "36px" }}>Управление соревнованиями</h1>} bordered={false}>
             <div>
                 <Button
                     className="rounded-[5px] bg-my-dark text-my-white p-2"
                     onClick={changeModalVisible}
-                >Создать олимпиаду
+                >Создать соревнование
                 </Button>
             </div>
-            <h2>Запланированные олимпиады</h2>
-            <div>
+            <h2>Запланированные соревнования</h2>
+            <div style={{display: "flex", flexDirection: "column", gap: "5px"}}>
                 {olympiads && olympiads.map(olympiad => (
                     <Card
                         key={olympiad.id}
                         onClick={() => navigate("/olympadmin/olympiads/" + olympiad.id)}
-                        title={<h2>Название: {olympiad.name}</h2>}
+                        title={<h2>{olympiad.name}</h2>}
                         hoverable={true}
                     >
                         <p>{olympiad.description}</p>
-                        <p>Дата начала: {new Date(olympiad.startDate).toDateString()}</p>
-                        <p>Дата конца: {new Date(olympiad.endDate).toDateString()}</p>
+                        <p>Дата начала: {new Date(olympiad.startDate).toDateString()} {new Date(olympiad.startDate).toLocaleTimeString("ru-RU")}</p>
+                        <p>Дата конца: {new Date(olympiad.endDate).toDateString()} {new Date(olympiad.endDate).toLocaleTimeString("ru-RU")}</p>
                     </Card>
                 ))}
             </div>
             <Modal open={modalVisible} onCancel={handleCancel} onOk={handleSubmitCreating} cancelText={"Отменить"}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "5px", justifyContent: "center" }}>
-                    <h2>Создание олимпиады</h2>
+                    <h2>Создание соревнования</h2>
                     <Input
-                        placeholder={"Название олимпиады"}
+                        placeholder={"Название соревнования"}
                         value={olympiadName}
                         onChange={(e) => setOlympiadName(e.target.value)}
                     />
                     <TextArea
                         className="h-[300px]"
-                        placeholder={"Описание олимпиады"}
+                        placeholder={"Описание соревнования"}
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                     />

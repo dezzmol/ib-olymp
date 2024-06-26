@@ -11,7 +11,7 @@ const OlympiadIdForm = () => {
     }
 
     return (
-        <Card title={<h1 style={{ fontSize: "36px" }}>Олимпиады</h1>} bordered={false}>
+        <Card title={<h1 style={{ fontSize: "36px" }}>Соревнования</h1>} bordered={false}>
             {olympiad &&
                 <div>
                     <h2 className="text-2xl">
