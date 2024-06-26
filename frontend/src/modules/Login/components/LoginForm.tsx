@@ -90,7 +90,7 @@ const LoginForm = () => {
 
     return (
         <Card title={haveAcc ? <h1>Войти в аккаунт</h1> : <h1>Зарегистрироваться</h1>}>
-            {haveAcc ?
+            {!haveAcc ?
                 <div style={{
                     textAlign: "center",
                     borderRadius: "5px",
