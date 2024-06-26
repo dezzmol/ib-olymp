@@ -21,9 +21,9 @@ const Login: FC<Props> = ({ username, setUsername, password, setPassword, signIn
             autoComplete="off"
         >
             <Form.Item
-                label="Email"
-                name="Email"
-                rules={[{ required: true, message: "Please input your email!" }]}
+                label="Логин"
+                name="username"
+                rules={[{ required: true, message: "Пожалуйста, введите логин!" }]}
             >
                 <Input
                     value={username}
@@ -32,9 +32,9 @@ const Login: FC<Props> = ({ username, setUsername, password, setPassword, signIn
             </Form.Item>
 
             <Form.Item
-                label="Password"
+                label="Пароль"
                 name="password"
-                rules={[{ required: true, message: "Please input your password!" }]}
+                rules={[{ required: true, message: "Пожалуйста, введите пароль!" }]}
             >
                 <Input.Password
                     value={password}
