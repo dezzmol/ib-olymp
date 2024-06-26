@@ -1,7 +1,8 @@
 import { baseAPI } from "@/API/baseAPI.ts"
-import { OlympiadAndApplications } from "@/modules/OlympiadIDAdminPage/types"
+import { OlympiadAndApplications, Result } from "@/modules/OlympiadIDAdminPage/types"
 import { IAdminOlympiad } from "@/modules/OlympiadAdmin/types"
 import { TeamDTO } from "@/modules/Team/types"
+import { ITask } from "@/modules/Admin/types"
 
 export const olympIdAdminAPI = baseAPI.injectEndpoints({
     endpoints: (build) => ({
@@ -14,6 +15,12 @@ export const olympIdAdminAPI = baseAPI.injectEndpoints({
         getAdminOlympiad: build.query<IAdminOlympiad, number>({
             query: (id) => ({
                 url: "/olympadmin/" + id,
+                method: "GET"
+            })
+        }),
+        getOlympiadTasks: build.query<ITask[], number>({
+            query: (id) => ({
+                url: "/olympadmin/" + id + "/tasks",
                 method: "GET"
             })
         }),
@@ -32,6 +39,18 @@ export const olympIdAdminAPI = baseAPI.injectEndpoints({
         getMembers: build.query<TeamDTO[], number>({
             query: (id) => ({
                 url: "/olympadmin/" + id + "/members",
+                method: "GET"
+            })
+        }),
+        summarizeOlympiadResult: build.mutation<Result[], number>({
+            query: (id) => ({
+                url: `/olympadmin/${id}/summarize`,
+                method: "POST"
+            })
+        }),
+        getOlympiadResult: build.query<Result[], number>({
+            query: (id) => ({
+                url: `/olympadmin/${id}/summarize`,
                 method: "GET"
             })
         })
