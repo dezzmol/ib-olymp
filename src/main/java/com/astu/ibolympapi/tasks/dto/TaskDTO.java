@@ -9,7 +9,7 @@ public record TaskDTO(
         String title,
         String description,
         Category category,
-        Boolean isOpen,
+        Boolean isTaskForWhile,
         String complexity,
         Boolean isDetailedAnswer,
         List<AttachmentForTaskDTO> attachments
