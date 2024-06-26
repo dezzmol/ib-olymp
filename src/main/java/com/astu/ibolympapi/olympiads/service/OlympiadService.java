@@ -1,5 +1,7 @@
 package com.astu.ibolympapi.olympiads.service;
 
+import com.astu.ibolympapi.olympiads.entities.Result;
+import com.astu.ibolympapi.olympiads.repositories.ResultRepo;
 import com.astu.ibolympapi.exceptions.BadRequestException;
 import com.astu.ibolympapi.exceptions.enums.ErrorCode;
 import com.astu.ibolympapi.olympiads.dto.*;
@@ -8,6 +10,7 @@ import com.astu.ibolympapi.olympiads.entities.Olympiad;
 import com.astu.ibolympapi.olympiads.entities.OlympiadApplication;
 import com.astu.ibolympapi.olympiads.entities.OlympiadTeams;
 import com.astu.ibolympapi.olympiads.mapper.OlympiadMapper;
+import com.astu.ibolympapi.olympiads.mapper.ResultMapper;
 import com.astu.ibolympapi.olympiads.repositories.AnswerRepo;
 import com.astu.ibolympapi.olympiads.repositories.OlympiadApplicationRepo;
 import com.astu.ibolympapi.olympiads.repositories.OlympiadRepo;
@@ -35,14 +38,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -59,6 +61,8 @@ public class OlympiadService {
     private final TaskService taskService;
     private final TeamService teamService;
     private final TaskMapper taskMapper;
+    private final ResultRepo resultRepo;
+    private final ResultMapper resultMapper;
     @Value("${file.upload-dir}")
     private String fileUploadDir;
 
@@ -171,6 +175,12 @@ public class OlympiadService {
         if (!olympiad.getTeams().contains(team)) {
             throw new BadRequestException(ErrorCode.TEAM_IS_NOT_PARTICIPANT_OF_OLYMPIAD);
         }
+        return taskMapper.tasksToTaskDTOs(olympiad.getTasks());
+    }
+
+    public List<TaskDTO> getOlympiadTasksToAdmin(Long olympiad_id) {
+        Olympiad olympiad = getOlympiad(olympiad_id);
+
         return taskMapper.tasksToTaskDTOs(olympiad.getTasks());
     }
 
@@ -355,7 +365,6 @@ public class OlympiadService {
             Path targetLocation = taskSolutions.resolve(newFileName);
             Files.copy(file.getInputStream(), targetLocation);
 
-            Path relativePath = solutions.relativize(targetLocation);
             answer.setFileName(newFileName);
 
             answerRepo.save(answer);
@@ -397,5 +406,96 @@ public class OlympiadService {
         answer.setAns(solutionDTO.answer());
 
         answerRepo.save(answer);
+    }
+
+    public List<ResultDTO> summarize(Long olymp_id) {
+        Olympiad olympiad = getOlympiad(olymp_id);
+
+        List<Answer> answers = answerRepo.findAnswerByOlympiad(olympiad)
+                .orElseThrow(() -> new BadRequestException(ErrorCode.ANSWER_NOT_FOUND));
+
+        if (resultRepo.findByOlympiad(olympiad).isPresent()) {
+            throw new BadRequestException(ErrorCode.RESULT_IS_ALREADY_SUMMARIZE);
+        }
+
+        setFinalMarkForAnswers(answers, olympiad);
+        List<ResultDTO> resultDTOS = resultMapper.toResultDTOs(setResults(answers, olympiad));
+        resultDTOS.sort(Comparator.comparing(ResultDTO::resultScore).reversed());
+        return resultDTOS;
+    }
+
+    private void setFinalMarkForAnswers(List<Answer> answers, Olympiad olympiad) {
+        int N = olympiad.getTeams().size();
+        for (Task task : olympiad.getTasks()) {
+            int Ns = 0;
+            for (Answer answer : answers) {
+                if (answer.getTask() == task) {
+                    if (Objects.equals(answer.getAns(), task.getRightAnswer())) {
+                        Ns++;
+                    }
+                }
+            }
+
+            double q = task.getMark() + task.getCategory().getMark();
+            double B = q / (1 + (double) Ns / N);
+
+            for (Answer answer : answers) {
+                if (answer.getTask() == task) {
+                    answer.setFinalMark(B);
+                }
+            }
+        }
+    }
+
+    private List<Result> setResults(List<Answer> answers, Olympiad olympiad) {
+        List<Result> results = new ArrayList<>(olympiad.getTeams().size());
+
+        for (Team team : olympiad.getTeams()) {
+            double score = 0;
+            for (Answer answer : answers) {
+                if (team == answer.getTeam()) {
+                    if (Objects.equals(answer.getAns(), answer.getTask().getRightAnswer())) {
+                        score += answer.getFinalMark();
+
+                        if (answer.getIsCreativeSolution()) {
+
+                        }
+
+                        Duration duration = Duration.between(answer.getStartTime(), answer.getEndTime());
+                        long minutes = duration.toMinutes();
+
+                        if (minutes < answer.getTask().getCategory().getTime()) {
+                            score += answer.getTask().getCategory().getExtraPoints();
+                        }
+
+                    }
+
+                }
+            }
+
+            Result result = Result.builder()
+                    .team(team)
+                    .resultScore(BigDecimal.valueOf(score))
+                    .olympiad(olympiad)
+                    .build();
+
+            results.add(result);
+        }
+
+        resultRepo.saveAll(results);
+        return results;
+    }
+
+    public List<ResultDTO> getResult(Long olympiad_id) {
+        Olympiad olympiad = getOlympiad(olympiad_id);
+
+        if (resultRepo.findByOlympiad(olympiad).isEmpty()) {
+            throw new BadRequestException(ErrorCode.RESULT_DOES_NOT_SUMMARIZE);
+        }
+        List<ResultDTO> resultDTOS = resultMapper.toResultDTOs(resultRepo.findByOlympiad(olympiad)
+                .orElseThrow(() -> new BadRequestException(ErrorCode.RESULT_DOES_NOT_SUMMARIZE)));
+
+        resultDTOS.sort(Comparator.comparing(ResultDTO::resultScore).reversed());
+        return resultDTOS;
     }
 }
