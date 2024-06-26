@@ -1,8 +1,9 @@
 import { EstimateForm } from "@/modules/Estimate"
+import classes from "@/styles/page.module.css"
 
 const EstimatePage = () => {
     return (
-        <main className="flex flex-col items-center min-h-[91vh] bg-my-white">
+        <main className={classes.page}>
             <EstimateForm />
         </main>
     )

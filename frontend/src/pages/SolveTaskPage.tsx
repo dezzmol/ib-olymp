@@ -1,8 +1,9 @@
 import { SolveTaskForm } from "@/modules/SolveTask"
+import classes from "@/styles/page.module.css"
 
 const SolveTaskPage = () => {
     return (
-        <main className="flex flex-col items-center min-h-[91vh] bg-my-white">
+        <main className={classes.page}>
             <SolveTaskForm />
         </main>
     )

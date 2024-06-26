@@ -1,8 +1,9 @@
 import { MyOlympiadsForm } from "@/modules/MyOlympiads"
+import classes from "@/styles/page.module.css"
 
 const MyOlympiadsPage = () => {
     return (
-        <main className="flex flex-col items-center min-h-[91vh] bg-my-white">
+        <main className={classes.page}>
             <MyOlympiadsForm />
         </main>
     )

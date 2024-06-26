@@ -1,8 +1,9 @@
 import { TeamForm } from "@/modules/Team"
+import classes from "@/styles/page.module.css"
 
 const TeamPage = () => {
     return (
-        <main className="flex flex-col items-center bg-my-white min-h-[91vh]">
+        <main className={classes.page}>
             <TeamForm />
         </main>
     )
