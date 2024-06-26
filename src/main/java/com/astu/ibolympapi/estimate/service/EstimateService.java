@@ -2,7 +2,6 @@ package com.astu.ibolympapi.estimate.service;
 
 import com.astu.ibolympapi.estimate.dto.AnswerDTO;
 import com.astu.ibolympapi.estimate.dto.RateSolutionDTO;
-import com.astu.ibolympapi.estimate.repository.ResultRepo;
 import com.astu.ibolympapi.exceptions.BadRequestException;
 import com.astu.ibolympapi.exceptions.enums.ErrorCode;
 import com.astu.ibolympapi.olympiads.entities.Answer;
@@ -35,7 +34,6 @@ public class EstimateService {
     private final AnswerMapper answerMapper;
     private final TaskService taskService;
     private final TaskMapper taskMapper;
-    private final ResultRepo resultRepo;
     @Value("${file.upload-dir}")
     private String fileUploadDir;
 
