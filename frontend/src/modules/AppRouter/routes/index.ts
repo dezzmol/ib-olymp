@@ -4,7 +4,7 @@ import {
     ADMIN_PAGE_ROUTE, ESTIMATE,
     LOGIN_ROUTE,
     MAIN_PAGE_ROUTE, MY_OLYMPIADS, OLYMPIAD_ADMIN_ROUTE, OLYMPIAD_ROUTE,
-    PROFILE_ROUTE, SOLVE_OLYMPIAD, TEAM_ROUTE
+    PROFILE_ROUTE, RESULT, SOLVE_OLYMPIAD, TEAM_ROUTE
 } from "@/modules/AppRouter/utils/consts.ts"
 import LoginPage from "@/pages/LoginPage.tsx"
 import AdminPage from "@/pages/AdminPage.tsx"
@@ -21,6 +21,8 @@ import SolveTaskPage from "@/pages/SolveTaskPage.tsx"
 import EstimatePage from "@/pages/EstimatePage.tsx"
 import EstimateIdPage from "@/pages/EstimateIdPage.tsx"
 import EstimateTaskIdPage from "@/pages/EstimateTaskIdPage.tsx"
+import JoinTeamPage from "@/pages/JoinTeamPage.tsx"
+import ResultAdminPage from "@/pages/ResultAdminPage.tsx"
 
 interface IPages {
     path: string
@@ -46,5 +48,7 @@ export const privatePages: IPages[] = [
     { path: SOLVE_OLYMPIAD + "/:olympiad_id/:task_id", component: SolveTaskPage },
     { path: ESTIMATE + OLYMPIAD_ROUTE, component: EstimatePage },
     { path: ESTIMATE + OLYMPIAD_ROUTE + "/:id", component: EstimateIdPage },
-    { path: ESTIMATE + OLYMPIAD_ROUTE + "/:id" + "/:task_id", component: EstimateTaskIdPage }
+    { path: ESTIMATE + OLYMPIAD_ROUTE + "/:id" + "/:task_id", component: EstimateTaskIdPage },
+    { path: TEAM_ROUTE + "/joinTeam/:token", component: JoinTeamPage },
+    { path: OLYMPIAD_ADMIN_ROUTE + "/:id" + RESULT, component: ResultAdminPage }
 ]
