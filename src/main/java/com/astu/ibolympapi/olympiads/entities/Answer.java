@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -53,4 +54,7 @@ public class Answer {
 
     @Column(name = "is_creative_solution")
     private Boolean isCreativeSolution;
+
+    @Column(name = "creativity_rate", precision = 2, scale = 1)
+    private BigDecimal creativeRate;
 }

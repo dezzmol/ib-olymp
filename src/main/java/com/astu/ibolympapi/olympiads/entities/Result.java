@@ -30,4 +30,7 @@ public class Result {
 
     @Column(name = "result_score", precision = 10, scale = 2)
     private BigDecimal resultScore;
+
+    @Column(name = "final_place")
+    private Integer finalPlace;
 }
