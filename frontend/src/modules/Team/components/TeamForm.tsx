@@ -101,7 +101,7 @@ const TeamForm = () => {
                     </div>
                 </Card>
             }
-            <Modal open={modalVisible} onCancel={handleCancel} onOk={handleCancelInvite} cancelText={"Отменить"}>
+            <Modal open={modalVisible} onCancel={handleCancel} onOk={teamRegister} cancelText={"Отменить"}>
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <h2>Регистрация команды</h2>
                     <Input
@@ -109,11 +109,6 @@ const TeamForm = () => {
                         value={teamName}
                         onChange={(e) => setTeamName(e.target.value)}
                     />
-                    <Button
-                        onClick={teamRegister}
-                    >
-                        Подтвердить
-                    </Button>
                 </div>
             </Modal>
             <Modal
