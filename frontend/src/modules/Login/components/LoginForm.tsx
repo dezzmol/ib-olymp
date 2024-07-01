@@ -89,7 +89,7 @@ const LoginForm = () => {
     }, [isRegistrationError, registrationError])
 
     return (
-        <Card title={haveAcc ? <h1>Войти в аккаунт</h1> : <h1>Зарегистрироваться</h1>}>
+        <Card title={!haveAcc ? <h1>Войти в аккаунт</h1> : <h1>Зарегистрироваться</h1>}>
             {!haveAcc ?
                 <div style={{
                     textAlign: "center",
