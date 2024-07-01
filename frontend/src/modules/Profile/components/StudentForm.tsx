@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/useTypedStore.ts"
 import { useEffect, useState } from "react"
 import { useGetStudentQuery, useRegistrationMutation } from "@/modules/Profile/API/studentAPI.ts"
 import { registerStudent } from "@/store/slice/studentSlice.ts"
-import { Button, Input, Modal } from "antd"
+import { Button, Input, InputNumber, Modal } from "antd"
 
 const StudentForm = () => {
     const [ageValue, setAgeValue] = useState<number>(18)
@@ -87,9 +87,10 @@ const StudentForm = () => {
                 <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
                     <h2>Зарегистрировать студента</h2>
                     <div>
-                        <Input
+                        Возраст
+                        <InputNumber
                             value={ageValue}
-                            onChange={(e) => setAgeValue(Number(e.target.value))}
+                            onChange={(e) => setAgeValue(Number(e))}
                             min={18}
                             placeholder={"Возраст"}
                             type={"number"}
@@ -97,6 +98,7 @@ const StudentForm = () => {
                         />
                     </div>
                     <div>
+
                         <Input
                             value={phoneNumberValue}
                             type="text"
