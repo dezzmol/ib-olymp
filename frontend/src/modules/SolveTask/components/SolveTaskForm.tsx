@@ -5,7 +5,7 @@ import { SolutionDTO } from "@/modules/Task/types"
 import { Button, Card, Input, Modal } from "antd"
 
 const SolveTaskForm = () => {
-    const [trigger, { data, isFetching, error }] = solveTaskAPI.useLazyGetAttachmentQuery()
+    const [trigger, { data, isFetching, error }] = solveTaskAPI.useLazyGetAttachmentToStudentQuery()
     const [fileToDownload, setFileToDownload] = useState<string | null>(null)
     const { olympiad_id, task_id } = useParams()
     const { data: isOpened, refetch: isOpenedRefetch } = solveTaskAPI.useCheckIsTaskOpenedQuery({
@@ -90,19 +90,19 @@ const SolveTaskForm = () => {
                     <p>Для того, чтобы приступить к выполнению данной задачи нажмите кнопку внизу. </p>
                     <p>После нажатия кнопки будет зафиксировано время начала выполнения задачи. </p>
                     <p>Оно будет учитываться при подсчете итогового балла</p>
-                    <button
-                        className="rounded-[5px] bg-my-dark text-my-white p-2"
+                    <Button
                         onClick={handleSubmitButton}
+                        type={"primary"}
                     >
                         Приступить к выполнению
-                    </button>
+                    </Button>
                 </Card>
                 :
                 <div>
                     {task &&
                         <Card title={<h1>Название задачи: {task.title}</h1>}>
                             <b>Категория: {task.category.name}</b>
-                            <p>Описание: {task.description}</p>
+                            <p style={{whiteSpace: "pre-wrap"}}>Описание: {task.description}</p>
                             <div>
                                 {task.attachments && task.attachments.map(attachment => (
                                     <div key={attachment.id}>
@@ -120,6 +120,7 @@ const SolveTaskForm = () => {
                                 :
                                 <Button
                                     onClick={changeModalVisible}
+                                    type={"primary"}
                                 >
                                     Внести решение
                                 </Button>
