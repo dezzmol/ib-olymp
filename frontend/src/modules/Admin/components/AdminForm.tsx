@@ -1,11 +1,12 @@
 import { useAppSelector } from "@/hooks/useTypedStore.ts"
 import { useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import { adminAPI } from "@/modules/Admin/API/adminAPI.ts"
 import CategoryForm from "@/modules/Admin/components/CategoryForm.tsx"
 import { complexity } from "@/modules/Admin/types"
 import { Button, Card, Checkbox, Input, Modal, Select } from "antd"
 import TextArea from "antd/es/input/TextArea"
+import { taskAPI } from "@/modules/Task/API/taskAPI.ts"
 
 const AdminForm = () => {
     const [taskTitle, setTaskTitle] = useState<string>("")
@@ -16,13 +17,15 @@ const AdminForm = () => {
     const [rightAnswer, setRightAnswer] = useState<string>("")
     const [complexity, setComplexity] = useState<complexity | null>("Низкая")
     const [mark, setMark] = useState<number>(0)
-
     const [modalVisible, setModalVisible] = useState<boolean>(false)
     const {role} = useAppSelector(state => state.userReducer)
     const navigate = useNavigate()
     const {data: tasks, refetch: tasksRefetch} = adminAPI.useGetAllTasksQuery()
     const {data: categories} = adminAPI.useGetAllCategoriesQuery()
     const [createTaskMut, {}] = adminAPI.useCreateTaskMutation()
+    const [isNeedFile, setIsNeedFile] = useState<boolean>(false)
+    const [file, setFile] = useState<File | null>(null)
+    const [createTaskAttachment] = taskAPI.useCreateAttachmentMutation()
 
     useEffect(() => {
         if (role === "ROLE_ADMIN") {
@@ -33,7 +36,8 @@ const AdminForm = () => {
     }, [])
 
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedCategoryId(Number(event.target.value));
+        console.log(event)
+        setSelectedCategoryId(Number(event));
     };
 
     const handleChangeComplexity = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -66,6 +70,9 @@ const AdminForm = () => {
                 rightAnswer: rightAnswer,
                 complexity: complexity
             })
+            if (file) {
+                await createTaskAttachment({ file, taskId: Number(id!) })
+            }
         }
         await tasksRefetch()
         setModalVisible(false)
@@ -74,6 +81,12 @@ const AdminForm = () => {
     const handleCancel = () => {
         setModalVisible(false);
     };
+
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setFile(e.target.files[0])
+        }
+    }
 
     return (
         <Card title={<h1 style={{ fontSize: "36px" }}>Админ-панель</h1>} bordered={false}>
@@ -150,14 +163,26 @@ const AdminForm = () => {
                         <Select.Option value="Средняя">Средняя</Select.Option>
                         <Select.Option value="Высокая">Высокая</Select.Option>
                     </Select>
+                    <div>
+                        Выберите категорию
+                    </div>
                     <Select onChange={handleChange} className="border-2 rounded">
-                        <Select.Option value="">Выберите категорию</Select.Option>
                         {categories && categories.map(category => (
                             <Select.Option key={category.id} value={category.id}>
                                 {category.name}
                             </Select.Option>
                         ))}
                     </Select>
+                    <div style={{display: "flex", flexDirection: "row", alignItems: "center", gap: "5px"}}>
+                        Нужен ли дополнительные файлы для загрузки?
+                        <Checkbox
+                            checked={isNeedFile}
+                            onChange={() => setIsNeedFile(prevState => !prevState)}
+                        />
+                    </div>
+                    {isNeedFile &&
+                        <Input type="file" onChange={handleFileChange} />
+                    }
                 </div>
             </Modal>
         </Card>
