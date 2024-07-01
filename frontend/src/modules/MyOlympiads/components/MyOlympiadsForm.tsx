@@ -15,9 +15,8 @@ const MyOlympiadsForm = () => {
 
                     <Card key={olympiad.id} title={<h2>{olympiad.name}</h2>} style={{ width: "500px" }}>
                         <p>{olympiad.university}</p>
-                        <p>Дата
-                            начала: {new Date(olympiad.startDate).toDateString()} {new Date(olympiad.startDate).toLocaleTimeString("ru-RU")}</p>
-                        <p>Дата конца: {new Date(olympiad.endDate).toDateString()}</p>
+                        <p>Дата начала: {new Date(olympiad.startDate).toLocaleDateString()} {new Date(olympiad.startDate).toLocaleTimeString("ru-RU")}</p>
+                        <p>Дата конца: {new Date(olympiad.endDate).toLocaleDateString()} {new Date(olympiad.endDate).toLocaleTimeString("ru-RU")}</p>
                         {currentDate > new Date(olympiad.startDate) && currentDate < new Date(olympiad.endDate) &&
                             <Button
                                 className="rounded-[5px] bg-my-dark text-my-white p-2 mt-2 w-full"
