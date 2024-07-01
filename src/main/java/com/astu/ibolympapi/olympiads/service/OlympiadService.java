@@ -1,6 +1,7 @@
 package com.astu.ibolympapi.olympiads.service;
 
 import com.astu.ibolympapi.olympiads.entities.Result;
+import com.astu.ibolympapi.olympiads.mapper.AnswerMapper;
 import com.astu.ibolympapi.olympiads.repositories.ResultRepo;
 import com.astu.ibolympapi.exceptions.BadRequestException;
 import com.astu.ibolympapi.exceptions.enums.ErrorCode;
@@ -58,6 +59,7 @@ public class OlympiadService {
     private final OlympiadTaskRepo olympiadTaskRepo;
     private final OlympiadTeamsRepo olympiadTeamsRepo;
     private final AnswerRepo answerRepo;
+    private final AnswerMapper answerMapper;
     private final TaskService taskService;
     private final TeamService teamService;
     private final TaskMapper taskMapper;
@@ -270,7 +272,6 @@ public class OlympiadService {
             throw new BadRequestException(ErrorCode.TASK_IS_NOT_IN_OLYMPIAD);
         }
 
-        OlympiadTask olympiadTask = new OlympiadTask(olympiad, task);
         Answer answer = answerRepo.findAnswerByOlympiadAndTaskAndTeam(olympiad, task, team)
                 .orElse(null);
 
@@ -414,14 +415,16 @@ public class OlympiadService {
         List<Answer> answers = answerRepo.findAnswerByOlympiad(olympiad)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.ANSWER_NOT_FOUND));
 
-        if (resultRepo.findByOlympiad(olympiad).isPresent()) {
+        List<Result> results = resultRepo.findByOlympiad(olympiad)
+                .orElse(null);
+
+        if (results.size() > 0) {
             throw new BadRequestException(ErrorCode.RESULT_IS_ALREADY_SUMMARIZE);
         }
 
         setFinalMarkForAnswers(answers, olympiad);
-        List<ResultDTO> resultDTOS = resultMapper.toResultDTOs(setResults(answers, olympiad));
-        resultDTOS.sort(Comparator.comparing(ResultDTO::resultScore).reversed());
-        return resultDTOS;
+
+        return resultMapper.toResultDTOs(setResults(answers, olympiad));
     }
 
     private void setFinalMarkForAnswers(List<Answer> answers, Olympiad olympiad) {
@@ -438,7 +441,7 @@ public class OlympiadService {
 
             double q = task.getMark() + task.getCategory().getMark();
             double B = q / (1 + (double) Ns / N);
-
+            System.out.println(task.getId() + ": q:" + q + " B:" + B);
             for (Answer answer : answers) {
                 if (answer.getTask() == task) {
                     answer.setFinalMark(B);
@@ -458,7 +461,9 @@ public class OlympiadService {
                         score += answer.getFinalMark();
 
                         if (answer.getIsCreativeSolution()) {
+                            BigDecimal extraPoints = new BigDecimal(answer.getTask().getExtraPointsForCreativeSolution());
 
+                            score += answer.getCreativeRate().multiply(extraPoints).doubleValue();
                         }
 
                         Duration duration = Duration.between(answer.getStartTime(), answer.getEndTime());
@@ -482,6 +487,11 @@ public class OlympiadService {
             results.add(result);
         }
 
+        results.sort(Comparator.comparing(Result::getResultScore).reversed());
+        for (int i = 0; i < results.size(); i++) {
+            results.get(i).setFinalPlace(i + 1);
+        }
+
         resultRepo.saveAll(results);
         return results;
     }
@@ -498,4 +508,25 @@ public class OlympiadService {
         resultDTOS.sort(Comparator.comparing(ResultDTO::resultScore).reversed());
         return resultDTOS;
     }
+
+//    public Resource getExcelSummarize(Long olympiad_id) throws IOException {
+//        Olympiad olympiad = getOlympiad(olympiad_id);
+//
+//        try {
+//            Path dirPath = Path.of(fileUploadDir).resolve("results");
+//            if (Files.notExists(dirPath)) {
+//                Files.createDirectories(dirPath);
+//            }
+//
+//            Path filePath = dirPath.resolve(id + ".txt");
+//            if (Files.notExists(filePath)) {
+//                createFile(filePath);
+//            }
+//
+//            return new FileSystemResource(filePath.toFile());
+//        } catch (MalformedURLException e) {
+//            throw new BadRequestException(HttpStatusCode.valueOf(400), "Error" + e.getMessage());
+//        }
+//
+//    }
 }

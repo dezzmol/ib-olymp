@@ -62,4 +62,15 @@ public class OlympiadsAdminController {
     public ResponseEntity<List<ResultDTO>> getResult(@PathVariable Long olympiad_id) {
         return ResponseEntity.ok(service.getResult(olympiad_id));
     }
+
+//    @GetMapping("/{olympiad_id}/summarize/excel")
+//    public ResponseEntity<Resource> getExcelSummarize(@PathVariable Long olympiad_id) {
+//        Resource resource = service.getExcelSummarize(olymp_id);
+//        String contentType = "application/octet-stream";
+//        String headerValue = "attachment; filename=\"" + resource.getFilename() + "\"";
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.parseMediaType(contentType))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
+//                .body(resource);
+//    }
 }
