@@ -1,8 +1,10 @@
+import classes from "@/styles/page.module.css"
+import { MainForm } from "@/modules/MainModule"
 
 const MainPage = () => {
     return (
-        <main className="flex flex-col items-center min-h-[91vh] bg-my-white">
-            main
+        <main className={classes.page}>
+            <MainForm />
         </main>
     );
 };
