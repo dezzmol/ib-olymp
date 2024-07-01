@@ -46,6 +46,9 @@ public class Task {
     @Column(name = "complexity")
     private String complexity;
 
+    @Column(name = "extra_points_for_creative_solution")
+    private Integer extraPointsForCreativeSolution;
+
     @ManyToMany(mappedBy = "tasks")
     private List<Olympiad> olympiads;
 
