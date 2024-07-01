@@ -11,4 +11,5 @@ export interface Result {
     team: TeamDTO
     olympiad: Olympiad
     resultScore: number
+    finalPlace: number
 }
