@@ -1,0 +1,2 @@
+ALTER TABLE results
+    ADD COLUMN final_place INTEGER DEFAULT 0;
