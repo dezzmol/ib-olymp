@@ -3,7 +3,7 @@ import { estimateAPI } from "@/modules/Estimate/API/estimateAPI.ts"
 import { useParams } from "react-router-dom"
 import { ITask } from "@/modules/Admin/types"
 import { AnswerDTO } from "@/modules/Estimate/types"
-import { Button, Card, Checkbox, Modal } from "antd"
+import { Button, Card, Checkbox, InputNumber, Modal } from "antd"
 
 interface Props {
     task: ITask | undefined
@@ -21,6 +21,7 @@ const Solutions: FC<Props> = ({ task }) => {
     const [chosenAnswer, setChosenAnswer] = useState<AnswerDTO | null>()
     const [isCreativeSolution, setIsCreativeSolution] = useState<boolean>(false)
     const [rateSolution] = estimateAPI.useRateSolutionMutation()
+    const [creativeRate, setCreativeRate] = useState<number>(1)
 
     useEffect(() => {
         if (fileToDownload) {
@@ -66,8 +67,8 @@ const Solutions: FC<Props> = ({ task }) => {
     }
 
     const handleCancel = () => {
-        setModalVisible(false);
-    };
+        setModalVisible(false)
+    }
 
     return (
         <Card>
@@ -91,13 +92,27 @@ const Solutions: FC<Props> = ({ task }) => {
                     <p>Ответ: {chosenAnswer?.ans}</p>
                     {task?.isDetailedAnswer &&
                         <div className="flex flex-col  gap-2">
-                            <div className="flex-row flex gap-2">
+                            <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}
+                                 className="flex-row flex gap-2">
                                 Решение является креативным:
                                 <Checkbox
                                     type={"checkbox"}
                                     checked={isCreativeSolution}
                                     onChange={() => setIsCreativeSolution(prevState => !prevState)}
                                 />
+                                {isCreativeSolution &&
+                                    <div>
+                                        Введите коэффицент кретивности (1 - низкий, 1.5 - средний, 2 - высокий)
+                                        <InputNumber
+                                            placeholder={"Кретивность решения"}
+                                            defaultValue={1}
+                                            max={2}
+                                            value={creativeRate}
+                                            onChange={(e) => setCreativeRate(Number(e))}
+                                        />
+                                    </div>
+
+                                }
                             </div>
                         </div>
                     }
