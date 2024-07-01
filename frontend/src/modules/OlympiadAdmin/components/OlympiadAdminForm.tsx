@@ -59,6 +59,7 @@ const OlympiadAdminForm = () => {
                 <Button
                     className="rounded-[5px] bg-my-dark text-my-white p-2"
                     onClick={changeModalVisible}
+                    type={"primary"}
                 >Создать соревнование
                 </Button>
             </div>
