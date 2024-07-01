@@ -8,5 +8,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface AnswerMapper {
+    AnswerDTO toAnswerDTO(Answer answer);
     List<AnswerDTO> toAnswerDTOs(List<Answer> answers);
 }
