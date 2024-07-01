@@ -22,7 +22,7 @@ export const solveTaskAPI = baseAPI.injectEndpoints({
                 method: "GET"
             })
         }),
-        getAttachment: build.query<AttachmentResponse, { olympId: number, taskId: number, fileName: string }>({
+        getAttachmentToStudent: build.query<AttachmentResponse, { olympId: number, taskId: number, fileName: string }>({
             query: ({ olympId, taskId, fileName }) => ({
                 url: `/olymp/${olympId}/tasks/${taskId}/attachments/${fileName}`,
                 responseHandler: (response) => response.blob().then((data) => ({ data, fileName }))
