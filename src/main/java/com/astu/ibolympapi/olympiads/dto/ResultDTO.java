@@ -8,6 +8,7 @@ public record ResultDTO(
         Long id,
         OlympiadDTO olympiad,
         TeamDTO team,
-        Double resultScore
+        Double resultScore,
+        Integer finalPlace
 ) implements Serializable {
 }
