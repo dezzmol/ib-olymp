@@ -22,7 +22,7 @@ const columns: TableColumnsType<ITask> = [
     {
         title: "Задача на время",
         dataIndex: "isTaskForWhile",
-        render: text => <div>{text ? "Да" : "Нет"}</div>
+        render: (value, record, index) => <div>{record.isTaskForWhile ? "Да" : "Нет"}</div>
     },
     {
         title: "Трудоемкость решения",
@@ -74,16 +74,15 @@ const OlympiadIDAdminForm = () => {
     const addTaskToOlympiad = async () => {
         for (const number of selectedRowKeys) {
             console.log(number)
+            if (olympiad) {
+                await addTask({
+                    olympiad_id: olympiad.olympiad.id,
+                    task_id: number as number
+                })
+                setModalVisible(false)
+            }
         }
-        // if (olympiad && taskId) {
-        //     await addTask({
-        //         olympiad_id: olympiad.olympiad.id,
-        //         task_id: taskId
-        //     })
-        //     await taskRefetch()
-        //     setModalVisible(false)
-        //
-        // }
+
 
     }
 
