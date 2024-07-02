@@ -46,15 +46,15 @@ export const useSignUp: useSignUp = (
 
     const signUp = async (): Promise<void> => {
         const error: string = validateFn()
-
-        if (
-            testInput(usernameValue) ||
-            testInput(emailValue) ||
-            testInput(passwordValue)
-        ) {
-            return;
-        }
-
+        console.log(1)
+        // if (
+        //     testInput(usernameValue) ||
+        //     testInput(emailValue) ||
+        //     testInput(passwordValue)
+        // ) {
+        //     return;
+        // }
+        console.log(123)
         if (error) {
             return
         }
