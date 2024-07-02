@@ -60,7 +60,7 @@ const AdminForm = () => {
             complexity: complexity
         })
         if (selectedCategoryId && mark !== 0 && complexity) {
-            await createTaskMut({
+            const result = await createTaskMut({
                 title: taskTitle,
                 description: taskDescription,
                 category_id: selectedCategoryId!,
@@ -70,8 +70,8 @@ const AdminForm = () => {
                 rightAnswer: rightAnswer,
                 complexity: complexity
             })
-            if (file) {
-                await createTaskAttachment({ file, taskId: Number(id!) })
+            if (file && result && "data" in result && !result.error) {
+                await createTaskAttachment({ file, taskId: Number(result.data.id) })
             }
         }
         await tasksRefetch()
