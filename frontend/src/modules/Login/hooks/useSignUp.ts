@@ -2,6 +2,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query/react"
 import { SerializedError } from "@reduxjs/toolkit"
 import { authAPI } from "@/modules/Login/API/authAPI.ts"
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 type useSignUp = (
     validateFn: () => string,
@@ -10,7 +11,7 @@ type useSignUp = (
     nameValue: string,
     surnameValue: string,
     patronymicValue: string,
-    passwordValue: string,
+    passwordValue: string
 ) => [
     () => Promise<void>,
     boolean,
@@ -26,7 +27,7 @@ export const useSignUp: useSignUp = (
     nameValue,
     surnameValue,
     patronymicValue,
-    passwordValue,
+    passwordValue
 ) => {
     const [
         register,
@@ -38,10 +39,11 @@ export const useSignUp: useSignUp = (
         }
     ] = authAPI.useRegisterMutation()
     const [errorMessage, setErrorMessage] = useState<string>("")
+    const navigate = useNavigate()
 
     function testInput(str: string): boolean {
-        const englishLettersRegex = /^[A-Za-z]+$/;
-        return englishLettersRegex.test(str);
+        const englishLettersRegex = /^[A-Za-z]+$/
+        return englishLettersRegex.test(str)
     }
 
     const signUp = async (): Promise<void> => {
@@ -75,7 +77,7 @@ export const useSignUp: useSignUp = (
         if ("error" in result) {
             const err = result.error as FetchBaseQueryError | SerializedError
             if ("data" in err && err.data && typeof err.data === "object" && "message" in err.data) {
-                setErrorMessage((err.data as { message: string }).message);
+                setErrorMessage((err.data as { message: string }).message)
                 return
             }
             if ("message" in err) {
@@ -85,9 +87,11 @@ export const useSignUp: useSignUp = (
             }
         }
 
-        if ("data" in result) {
-            console.log(result.data)
-        }
+
+        console.log(result)
+        alert("Проверьте вашу почту")
+        navigate("/")
+
     }
 
     return [
