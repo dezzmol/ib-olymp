@@ -1,15 +1,21 @@
 package com.astu.ibolympapi.web;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 @Data
+@RequiredArgsConstructor
 public class Web {
+    @Value("spring.client.url")
+    private String clientUrl;
+
     private final List<String> allowedOrigins = List.of(
-            "http://localhost:5173"
+            clientUrl
     );
 
     private final List<String> allowedPaths = List.of(

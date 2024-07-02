@@ -30,8 +30,6 @@ public class TeamService {
     private final TeamMapper teamMapper;
     private final InviteTokenRepo inviteTokenRepo;
     private final StudentService studentService;
-    @Value("${spring.server.url}")
-    private String serverUrl;
     private final Web web;
 
     public TeamDTO createTeam(CreateTeamDTO createTeamDTO) {

@@ -37,7 +37,6 @@ import java.util.List;
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserService userService;
     private final TokenService tokenService;
-    private final Web web;
     private final ObjectMapper mapper;
     private static final List<String> ALLOWED_PATHS = List.of(
             "/api/v1/auth/**",
