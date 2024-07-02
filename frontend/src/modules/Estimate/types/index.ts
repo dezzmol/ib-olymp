@@ -11,5 +11,6 @@ export interface AnswerDTO {
 }
 
 export interface RateSolutionDTO {
-    isCreativeSolution: boolean
+    isCreativeSolution: boolean,
+    rateCoefficient: number
 }
