@@ -21,6 +21,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.util.List;
@@ -81,6 +82,7 @@ public class EstimateService {
 
         answer.setIsChecked(true);
         answer.setIsCreativeSolution(rateSolutionDTO.isCreativeSolution());
+        answer.setCreativeRate(BigDecimal.valueOf(rateSolutionDTO.rateCoefficient()));
 
         answerRepo.save(answer);
     }

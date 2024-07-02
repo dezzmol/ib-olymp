@@ -1,6 +1,7 @@
 package com.astu.ibolympapi.estimate.dto;
 
 public record RateSolutionDTO(
-        Boolean isCreativeSolution
+        Boolean isCreativeSolution,
+        Double rateCoefficient
 ) {
 }
