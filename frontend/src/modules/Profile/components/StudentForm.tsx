@@ -42,7 +42,7 @@ const StudentForm = () => {
                 otherContactsData: st.data!.otherContactsData
             }))
         }
-        changeModalVisible(false)
+        setModalVisible(false)
     }
 
     useEffect(() => {

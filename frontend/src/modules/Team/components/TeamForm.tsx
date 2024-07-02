@@ -18,6 +18,7 @@ const TeamForm = () => {
     const [inviteLink, setInviteLink] = useState<string>("")
     const [generateLinkToInvite] = useGenerateLinkMutation()
     const [deleteMember] = teamAPI.useRemoveStudentFromTheTeamMutation()
+    const [selectedMemberId, setSelectedMemberId] = useState<number>(0)
 
     const teamRegister = async () => {
         await register({ name: teamName })
@@ -61,10 +62,11 @@ const TeamForm = () => {
 
     const handleSelectChange = (value: string) => {
         console.log(`selected ${value}`)
+        setSelectedMemberId(Number(value))
     }
 
     const removeMember = async () => {
-        await deleteMember()
+        await deleteMember(selectedMemberId)
     }
 
     return (

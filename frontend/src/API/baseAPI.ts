@@ -9,6 +9,8 @@ import {
 import { deleteUser } from "@/store/slice/userSlice.ts"
 import { login, logout } from "@/store/slice/authSlice.ts"
 import { BASE_API_URL } from "@/utils/consts.ts"
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 import { QueryReturnValue } from "@reduxjs/toolkit/dist/query/baseQueryTypes"
 
 const baseQuery = fetchBaseQuery({

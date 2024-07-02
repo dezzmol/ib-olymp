@@ -9,7 +9,9 @@ import { estimateAPI } from "@/modules/Estimate/API/estimateAPI.ts"
 const EstimateTaskIdForm = () => {
     const { task_id, id } = useParams()
     const { data: task } = estimateAPI.useGetOlympiadTaskToEstimateQuery({olympiad_id: Number(id!), task_id: Number(task_id!)})
-    const [trigger, { data, isFetching, error }] = solveTaskAPI.useLazyGetAttachmentQuery()
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const [trigger, { data }] = solveTaskAPI.useLazyGetAttachmentQuery()
     const [fileToDownload, setFileToDownload] = useState<string | null>(null)
 
     useEffect(() => {

@@ -35,6 +35,9 @@ const OlympiadAdminForm = () => {
     }
 
     const handleSubmitCreating = async () => {
+        if (!startDate || !endDate) {
+            return
+        }
         if (startDate > endDate) {
             return
         }
@@ -100,14 +103,14 @@ const OlympiadAdminForm = () => {
                     <h2>Дата начала</h2>
                     <DatePicker
                         selected={startDate}
-                        onChange={(date) => setStartDate(date)}
+                        onChange={(date) => setStartDate(date!)}
                         locale="ru"
                         showTimeSelect
                     />
                     <h2>Дата окончания</h2>
                     <DatePicker
                         selected={endDate}
-                        onChange={(date) => setEndDate(date)}
+                        onChange={(date) => setEndDate(date!)}
                         locale="ru"
                         showTimeSelect
                     />
