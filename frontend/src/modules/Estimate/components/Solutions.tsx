@@ -59,7 +59,8 @@ const Solutions: FC<Props> = ({ task }) => {
                 olympiad_id: Number(id!),
                 solution_id: solution_id,
                 rateSolutionDTO: {
-                    isCreativeSolution: isCreativeSolution
+                    isCreativeSolution: isCreativeSolution,
+                    rateCoefficient: creativeRate
                 }
             })
             setModalVisible(false)
