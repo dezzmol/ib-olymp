@@ -44,7 +44,7 @@ public class AuthenticationController {
     @GetMapping("/activate/{activate-token}")
     public ResponseEntity<?> activate(@PathVariable("activate-token") String activateToken, HttpServletResponse response) throws IOException {
         service.activate(activateToken);
-        response.sendRedirect(web.getAllowedOrigins().getFirst());
+        response.sendRedirect(web.getAllowedOrigins().get(0));
         return null;
     }
 
