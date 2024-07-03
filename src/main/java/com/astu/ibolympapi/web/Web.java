@@ -15,7 +15,8 @@ public class Web {
     private String clientUrl;
 
     private final List<String> allowedOrigins = List.of(
-            "http://frontend:80"
+            "http://5.35.95.100",
+	    "http://localhost"
     );
 
     private final List<String> allowedPaths = List.of(
