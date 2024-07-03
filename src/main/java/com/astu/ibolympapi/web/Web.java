@@ -15,8 +15,8 @@ public class Web {
     private String clientUrl;
 
     private final List<String> allowedOrigins = List.of(
-            "http://5.35.95.100",
-	    "http://localhost"
+            "http://astuctf",
+            "http://localhost"
     );
 
     private final List<String> allowedPaths = List.of(
