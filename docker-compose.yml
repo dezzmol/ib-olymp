@@ -34,12 +34,12 @@ services:
         container_name: 'react-frontend'
         restart: always
         build:
-            context: /frontend
+            context: "./frontend"
             dockerfile: Dockerfile
         depends_on:
             - backend
         ports:
-            - '3000:3000'
+            - '80:80'
         networks:
             - main_network
         env_file:
