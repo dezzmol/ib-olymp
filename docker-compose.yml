@@ -47,4 +47,5 @@ services:
 
 networks:
     main_network:
+        name: network
         driver: bridge
