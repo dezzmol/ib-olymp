@@ -12,6 +12,7 @@ import com.astu.ibolympapi.user.dto.UserDTO;
 import com.astu.ibolympapi.user.entities.User;
 import com.astu.ibolympapi.user.repositories.UserRepo;
 import com.astu.ibolympapi.user.services.UserService;
+import com.astu.ibolympapi.web.Web;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class AuthenticationService {
     private final UserRepo userRepo;
     @Value("${spring.server.url}")
     private String serverUrl;
+    private final Web web;
 
     public void signUp(SignUpRequest request) {
         userService.signUp(request);
@@ -54,6 +56,7 @@ public class AuthenticationService {
         String accessToken = tokenService.generateAccessToken(authRequest.username(), TokenType.ACCESS_TOKEN);
         String refreshToken = tokenService.generateRefreshToken(authRequest.username(), TokenType.REFRESH_TOKEN);
         Cookie cookie = new Cookie(TokenType.REFRESH_TOKEN.toString(), refreshToken);
+        cookie.setDomain(web.getAllowedOrigins().get(0));
         response.addCookie(cookie);
         return new AuthenticationResponse(TokenType.ACCESS_TOKEN.name(), accessToken, TokenType.ACCESS_TOKEN.getTokenExpiration());
     }

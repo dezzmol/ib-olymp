@@ -15,7 +15,7 @@ public class Web {
     private String clientUrl;
 
     private final List<String> allowedOrigins = List.of(
-            "http://astuctf",
+            "http://astuctf.ru",
             "http://localhost"
     );
 
