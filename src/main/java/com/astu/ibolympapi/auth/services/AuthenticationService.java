@@ -56,7 +56,8 @@ public class AuthenticationService {
         String accessToken = tokenService.generateAccessToken(authRequest.username(), TokenType.ACCESS_TOKEN);
         String refreshToken = tokenService.generateRefreshToken(authRequest.username(), TokenType.REFRESH_TOKEN);
         Cookie cookie = new Cookie(TokenType.REFRESH_TOKEN.toString(), refreshToken);
-        cookie.setDomain(web.getAllowedOrigins().get(0));
+        cookie.setHttpOnly(true);
+	System.out.println(cookie.getDomain());
         response.addCookie(cookie);
         return new AuthenticationResponse(TokenType.ACCESS_TOKEN.name(), accessToken, TokenType.ACCESS_TOKEN.getTokenExpiration());
     }

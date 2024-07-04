@@ -55,6 +55,7 @@ public class AuthenticationController {
     }
 
     @Operation(summary = "Get user data")
+    @CrossOrigin(origins = "http://astuctf.ru")
     @PostMapping("/getdata")
     public ResponseEntity<UserDTO> getData(@CookieValue("REFRESH_TOKEN") String refreshToken) {
         return ResponseEntity.ok(service.getData(refreshToken));

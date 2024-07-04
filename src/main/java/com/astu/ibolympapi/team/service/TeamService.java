@@ -89,7 +89,7 @@ public class TeamService {
                 .build();
 
         inviteTokenRepo.save(inviteToken);
-        return new InviteLinkDTO(web.getAllowedOrigins().getFirst() + "/team/joinTeam/" + inviteToken.getToken());
+        return new InviteLinkDTO(web.getAllowedOrigins().get(0) + "/team/joinTeam/" + inviteToken.getToken());
     }
 
     public void removeStudentFromTeam(Long studentId) {
