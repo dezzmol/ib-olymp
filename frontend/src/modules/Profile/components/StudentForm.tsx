@@ -79,13 +79,13 @@ const StudentForm = () => {
                     <Button
                         onClick={changeModalVisible}
                     >
-                        Зарегистрировать студента
+                        Зарегистрировать участника
                     </Button>
                 </div>
             }
             <Modal open={modalVisible} onCancel={handleCancel} onOk={register} cancelText={"Отменить"}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                    <h2>Зарегистрировать студента</h2>
+                    <h2>Зарегистрировать участника</h2>
                     <div>
                         Возраст
                         <InputNumber
