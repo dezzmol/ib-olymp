@@ -17,7 +17,7 @@ const columns: TableColumnsType<ITask> = [
     {
         title: "Категория",
         dataIndex: "category",
-        render: (text) => <div>{text.title}</div>
+        render: (value, record, index) => <div>{record.category.name}</div>
     },
     {
         title: "Задача на время",
@@ -112,14 +112,14 @@ const OlympiadIDAdminForm = () => {
     }, [olympiadTasks])
 
     const getResult = async () => {
-        if (result) {
-            navigate(`/olympadmin/${id}/result`)
-        }
+        // if (result) {
+        //     navigate(`/olympadmin/${id}/result`)
+        // }
         const response = await summarizeResult(Number(id!))
 
-        if ("data" in response) {
+        // if ("data" in response) {
             navigate(`/olympadmin/${id}/result`)
-        }
+        // }
     }
 
     return (
