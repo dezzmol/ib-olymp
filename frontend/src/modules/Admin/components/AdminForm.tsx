@@ -1,9 +1,8 @@
 import { useAppSelector } from "@/hooks/useTypedStore.ts"
 import { useNavigate } from "react-router-dom"
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, SetStateAction, useEffect, useState } from "react"
 import { adminAPI } from "@/modules/Admin/API/adminAPI.ts"
 import CategoryForm from "@/modules/Admin/components/CategoryForm.tsx"
-import { complexity } from "@/modules/Admin/types"
 import { Button, Card, Checkbox, Input, Modal, Select } from "antd"
 import TextArea from "antd/es/input/TextArea"
 import { taskAPI } from "@/modules/Task/API/taskAPI.ts"
@@ -11,17 +10,17 @@ import { taskAPI } from "@/modules/Task/API/taskAPI.ts"
 const AdminForm = () => {
     const [taskTitle, setTaskTitle] = useState<string>("")
     const [taskDescription, setTaskDescription] = useState<string>("")
-    const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null)
     const [isDetailedAnswer, setIsDetailedAnswer] = useState<boolean>(false)
     const [isTaskForWhile, setIsTaskForWhile] = useState<boolean>(false)
     const [rightAnswer, setRightAnswer] = useState<string>("")
-    const [complexity, setComplexity] = useState<complexity | null>("Низкая")
+    const [complexity, setComplexity] = useState<string>("Низкая")
     const [mark, setMark] = useState<number>(0)
     const [modalVisible, setModalVisible] = useState<boolean>(false)
-    const {role} = useAppSelector(state => state.userReducer)
+    const { role } = useAppSelector(state => state.userReducer)
     const navigate = useNavigate()
-    const {data: tasks, refetch: tasksRefetch} = adminAPI.useGetAllTasksQuery()
-    const {data: categories} = adminAPI.useGetAllCategoriesQuery()
+    const { data: tasks, refetch: tasksRefetch } = adminAPI.useGetAllTasksQuery()
+    const { data: categories } = adminAPI.useGetAllCategoriesQuery()
     const [createTaskMut, {}] = adminAPI.useCreateTaskMutation()
     const [isNeedFile, setIsNeedFile] = useState<boolean>(false)
     const [file, setFile] = useState<File | null>(null)
@@ -36,13 +35,12 @@ const AdminForm = () => {
     }, [])
 
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        console.log(event)
-        setSelectedCategoryId(Number(event));
-    };
+        setSelectedCategoryId(Number(event))
+    }
 
-    const handleChangeComplexity = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setComplexity(event.target.value as complexity);
-    };
+    const handleChangeComplexity = (event: SetStateAction<string>) => {
+        setComplexity(event)
+    }
 
 
     const changeModalVisible = () => {
@@ -57,7 +55,7 @@ const AdminForm = () => {
             isDetailedAnswer: isDetailedAnswer,
             mark: mark,
             rightAnswer: rightAnswer,
-            complexity: complexity
+            complexity: complexity as string
         })
         if (selectedCategoryId && mark !== 0 && complexity) {
             const result = await createTaskMut({
@@ -68,7 +66,7 @@ const AdminForm = () => {
                 isDetailedAnswer: isDetailedAnswer,
                 mark: mark,
                 rightAnswer: rightAnswer,
-                complexity: complexity
+                complexity: complexity as string
             })
             if (file && result && "data" in result && !result.error) {
                 await createTaskAttachment({ file, taskId: Number(result.data.id) })
@@ -79,8 +77,8 @@ const AdminForm = () => {
     }
 
     const handleCancel = () => {
-        setModalVisible(false);
-    };
+        setModalVisible(false)
+    }
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -102,14 +100,15 @@ const AdminForm = () => {
                 <h2>Банк задач:</h2>
                 <div>
                     {tasks && tasks.map(task => (
-                        <div key={task.id} onClick={() => navigate("/admin/tasks/" + task.id)}>{task.id} {task.title}</div>
+                        <div key={task.id}
+                             onClick={() => navigate("/admin/tasks/" + task.id)}>{task.id} {task.title}</div>
                     ))}
                 </div>
             </div>
             <Modal
                 open={modalVisible} onCancel={handleCancel} onOk={createTask} cancelText={"Отменить"}
             >
-                <div style={{display: "flex", flexDirection: "column", gap: "5px"}}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
                     <h2>
                         Добавить новую задачу
                     </h2>
@@ -125,7 +124,7 @@ const AdminForm = () => {
                         onChange={(e) => setTaskDescription(e.target.value)}
                         className="border-2 rounded h-20"
                     />
-                    <div style={{display: "flex", flexDirection: "row", alignItems: "center", gap: "5px"}} >
+                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "5px" }}>
                         Требуется развернутый ответ:
                         <Checkbox
                             type="checkbox"
@@ -133,7 +132,7 @@ const AdminForm = () => {
                             onChange={() => setIsDetailedAnswer(prev => !prev)}
                         />
                     </div>
-                    <div style={{display: "flex", flexDirection: "row", alignItems: "center", gap: "5px"}}>
+                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "5px" }}>
                         Задача на время:
                         <Checkbox
                             type="checkbox"
@@ -173,7 +172,7 @@ const AdminForm = () => {
                             </Select.Option>
                         ))}
                     </Select>
-                    <div style={{display: "flex", flexDirection: "row", alignItems: "center", gap: "5px"}}>
+                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "5px" }}>
                         Нужен ли дополнительные файлы для загрузки?
                         <Checkbox
                             checked={isNeedFile}
