@@ -16,6 +16,7 @@ import com.astu.ibolympapi.olympiads.repositories.AnswerRepo;
 import com.astu.ibolympapi.olympiads.repositories.OlympiadApplicationRepo;
 import com.astu.ibolympapi.olympiads.repositories.OlympiadRepo;
 import com.astu.ibolympapi.olympiads.repositories.OlympiadTeamsRepo;
+import com.astu.ibolympapi.student.dto.StudentDTO;
 import com.astu.ibolympapi.student.entity.Student;
 import com.astu.ibolympapi.student.service.StudentService;
 import com.astu.ibolympapi.tasks.dto.SolutionDTO;
@@ -31,13 +32,19 @@ import com.astu.ibolympapi.team.mapper.TeamMapper;
 import com.astu.ibolympapi.team.service.TeamService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.apache.poi.ss.usermodel.Workbook;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
@@ -509,24 +516,47 @@ public class OlympiadService {
         return resultDTOS;
     }
 
-//    public Resource getExcelSummarize(Long olympiad_id) throws IOException {
-//        Olympiad olympiad = getOlympiad(olympiad_id);
-//
-//        try {
-//            Path dirPath = Path.of(fileUploadDir).resolve("results");
-//            if (Files.notExists(dirPath)) {
-//                Files.createDirectories(dirPath);
-//            }
-//
-//            Path filePath = dirPath.resolve(id + ".txt");
-//            if (Files.notExists(filePath)) {
-//                createFile(filePath);
-//            }
-//
-//            return new FileSystemResource(filePath.toFile());
-//        } catch (MalformedURLException e) {
-//            throw new BadRequestException(HttpStatusCode.valueOf(400), "Error" + e.getMessage());
-//        }
-//
-//    }
+    public Resource getExcelSummarize(Long olympiad_id, String file_name) throws IOException {
+        Olympiad olympiad = getOlympiad(olympiad_id);
+
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Страница 1");
+
+        Row header = sheet.createRow(0);
+        header.createCell(0).setCellValue("Место");
+        header.createCell(1).setCellValue("Название команды");
+        header.createCell(2).setCellValue("Состав команды");
+        header.createCell(3).setCellValue("Финальный балл");
+
+        List<ResultDTO> results = getResult(olympiad_id);
+
+        int index = 1;
+        for (ResultDTO result : results) {
+            Row row = sheet.createRow(index);
+            row.createCell(0).setCellValue(result.finalPlace());
+            row.createCell(1).setCellValue(result.team().name());
+            row.createCell(2).setCellValue(getStudentsNames(result.team().students()));
+            row.createCell(3).setCellValue(result.resultScore());
+            index++;
+        }
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        workbook.write(outputStream);
+        workbook.close();
+        ByteArrayResource resource = new ByteArrayResource(outputStream.toByteArray());
+        return resource;
+    }
+
+    private String getStudentsNames(List<StudentDTO> students) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (StudentDTO student : students) {
+            stringBuilder
+                    .append(student.user().surname())
+                    .append(" ")
+                    .append(student.user().name())
+                    .append("; ");
+        }
+
+        return stringBuilder.toString();
+    }
 }

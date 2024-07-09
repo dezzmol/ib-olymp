@@ -5,9 +5,13 @@ import com.astu.ibolympapi.olympiads.service.OlympiadService;
 import com.astu.ibolympapi.tasks.dto.TaskDTO;
 import com.astu.ibolympapi.team.dto.TeamDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -63,14 +67,14 @@ public class OlympiadsAdminController {
         return ResponseEntity.ok(service.getResult(olympiad_id));
     }
 
-//    @GetMapping("/{olympiad_id}/summarize/excel")
-//    public ResponseEntity<Resource> getExcelSummarize(@PathVariable Long olympiad_id) {
-//        Resource resource = service.getExcelSummarize(olymp_id);
-//        String contentType = "application/octet-stream";
-//        String headerValue = "attachment; filename=\"" + resource.getFilename() + "\"";
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.parseMediaType(contentType))
-//                .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
-//                .body(resource);
-//    }
+    @GetMapping("/{olympiad_id}/summarize/excel/{file_name}")
+    public ResponseEntity<Resource> getExcelSummarize(@PathVariable Long olympiad_id, @PathVariable String file_name) throws IOException {
+        Resource resource = service.getExcelSummarize(olympiad_id, file_name);
+        String contentType = "application/octet-stream";
+        String headerValue = "attachment; filename=\"" + file_name + "\"";
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
+                .body(resource);
+    }
 }
