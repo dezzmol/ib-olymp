@@ -58,5 +58,5 @@ export const baseAPI = createApi({
     reducerPath: 'baseApi',
     baseQuery: baseQueryWithReauth,
     endpoints: () => ({}),
-    tagTypes: ["olympiads", "tasks", "solutions", "answers", "task_answers", "all_task_answers"]
+    tagTypes: ["olympiads", "tasks", "solutions", "answers", "task_answers", "all_task_answers", "result"]
 })
