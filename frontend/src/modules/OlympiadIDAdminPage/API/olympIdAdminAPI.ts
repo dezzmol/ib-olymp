@@ -3,6 +3,7 @@ import { OlympiadAndApplications, Result } from "@/modules/OlympiadIDAdminPage/t
 import { IAdminOlympiad } from "@/modules/OlympiadAdmin/types"
 import { TeamDTO } from "@/modules/Team/types"
 import { ITask } from "@/modules/Admin/types"
+import { AttachmentResponse } from "@/modules/Task/types"
 
 export const olympIdAdminAPI = baseAPI.injectEndpoints({
     endpoints: (build) => ({
@@ -52,6 +53,12 @@ export const olympIdAdminAPI = baseAPI.injectEndpoints({
             query: (id) => ({
                 url: `/olympadmin/${id}/summarize`,
                 method: "GET"
+            })
+        }),
+        getExcelSummarize: build.query<AttachmentResponse, { olympiadId: number, fileName: string }>({
+            query: ({olympiadId, fileName}) => ({
+                url: `/olympadmin/${olympiadId}/summarize/excel/${fileName}`,
+                responseHandler: (response) => response.blob().then((data) => ({ data, fileName }))
             })
         })
     })
