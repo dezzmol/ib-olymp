@@ -53,7 +53,7 @@ private void setFinalMarkForAnswers(List<Answer> answers, Olympiad olympiad) {
     }
 ```
 
-### Метод для получения итогового балла:
+### Метод для сохранения и получения итоговых баллов:
 ```java
 private List<Result> setResults(List<Answer> answers, Olympiad olympiad) {
         List<Result> results = new ArrayList<>(olympiad.getTeams().size());
